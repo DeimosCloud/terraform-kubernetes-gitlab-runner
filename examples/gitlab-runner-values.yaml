@@ -48,16 +48,16 @@ rbac:
 runners:
   ## Default container image to use for builds when none is specified
   ##
-  image: eu.gcr.io/dcp-enterprise-optty/optty-builder-image
+  # image:
   tags: # Runner Tag
   locked: false
-
+  imagePullSecrets: []
   ## Run all containers with the privileged flag enabled
   ## This will allow the docker:stable-dind image to run if you need to run Docker
   ## commands. Please read the docs before turning this on:
   ## ref: https://docs.gitlab.com/runner/executors/kubernetes.html#using-docker-dind
   ##
-  privileged: false
+  privileged: true
   pod_security_context:
     fs_group: 412
 
@@ -71,6 +71,9 @@ runners:
 
   nodeSelector:
     gitlab-runner: "true"
+
+  podLabels:
+    gitlab-job: "true"
 
   ## Service Container specific configuration
   ##

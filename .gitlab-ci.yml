@@ -1,0 +1,51 @@
+variables:
+  DOCKER_USERNAME: _json_key
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: tcp://docker:2375
+  GCLOUD_SDK: gcr.io/google.com/cloudsdktool/cloud-sdk
+
+image:
+  name: hashicorp/terraform:0.13.3
+  entrypoint:
+    - "/usr/bin/env"
+    - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+stages:
+  - init
+  - validate
+
+default:
+  tags:
+    - docker
+
+cache: &cache
+  key: "${CI_COMMIT_REF_SLUG}-$CI_PROJECT_DIR-$DEPLOY_DIR"
+  paths:
+    - $CI_PROJECT_DIR/$DEPLOY_DIR/.terraform
+
+init:
+  stage: init
+  script:
+    - terraform init -input=false
+
+#------------------------------
+# TERRAFORM LINT TEMPLATE
+#------------------------------
+validate:
+  stage: validate
+  script:
+    - terraform validate
+  cache:
+    <<: *cache
+    policy: pull
+
+#------------------------------
+# TERRAFORM LINT TEMPLATE
+#------------------------------
+lint:
+  stage: validate
+  script:
+    - terraform fmt -check -diff -write=false --recursive .
+  cache:
+    <<: *cache
+    policy: pull

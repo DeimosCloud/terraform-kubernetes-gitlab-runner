@@ -35,3 +35,13 @@ variable "release_name" {
   description = "The helm release name"
   default     = "gitlab-runner"
 }
+
+variable default_runner_image {
+  description = "Runner Tags"
+  type        = string
+}
+
+variable "values_file" {
+  description = "Path to Values file to be passed to gitlab-runner helm templates"
+  default     = "gitlab-runner/values.yaml"
+}

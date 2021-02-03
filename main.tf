@@ -1,12 +1,3 @@
-terraform {
-  required_version = ">= 0.12"
-
-  required_providers {
-    helm       = ">=1.2.3"
-    kubernetes = ">=1.11.3"
-  }
-}
-
 //NAMESPACE
 resource "kubernetes_namespace" "gitlab_runner" {
   metadata {
@@ -60,10 +51,19 @@ resource "helm_release" "gitlab_runner" {
   repository = path.module
   chart      = "gitlab-runner"
   namespace  = var.namespace
+  # force_update = true
+  # dependency_update = true
+
 
   values = [
-    "${file("${path.module}/values.yaml")}"
+    "${file(var.values_file)}"
   ]
+
+  set {
+    type  = "string"
+    name  = "runners.image"
+    value = var.default_runner_image
+  }
 
   set {
     type  = "string"

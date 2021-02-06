@@ -1,4 +1,4 @@
-# Terraform-argocd
+# Terraform Kubernetes Gitlab-Runner Module
 Setup ArgoCD on cluster using terraform. Ensure the `kubernetes` provider configuration and `helm` provider configuration works fine
 
 ## Usage

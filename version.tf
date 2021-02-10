@@ -4,3 +4,4 @@ terraform {
     helm        = "~> 1.3"
     kubernetes  = "~> 1.13"
   }
+}  

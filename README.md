@@ -31,14 +31,18 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12 |
+| helm | ~> 1.3 |
+| kubernetes | ~> 1.13 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| helm | n/a |
-| kubernetes | n/a |
+| helm | ~> 1.3 |
+| kubernetes | ~> 1.13 |
 
 ## Inputs
 

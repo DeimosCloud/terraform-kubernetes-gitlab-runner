@@ -1,32 +1,32 @@
-variable namespace {
+variable "namespace" {
   type    = string
   default = "gitlab-runner"
 }
 
-variable service_account {
+variable "service_account" {
   description = "The name of the Service account to create"
   type        = string
   default     = "gitlab-runner-admin"
 }
 
-variable cluster_role {
+variable "cluster_role" {
   description = "Cluster role for gitlab runner rbac"
   type        = string
   default     = "gitlab-runner-admin"
 }
 
-variable cluster_role_binding {
+variable "cluster_role_binding" {
   description = "Cluster role for gitlab runner rbac"
   type        = string
   default     = "gitlab-runner-admin"
 }
 
-variable runner_registration_token {
+variable "runner_registration_token" {
   description = "runner registration token"
   type        = string
 }
 
-variable runner_tags {
+variable "runner_tags" {
   description = "runner tags"
   type        = string
 }
@@ -36,12 +36,12 @@ variable "release_name" {
   default     = "gitlab-runner"
 }
 
-variable default_runner_image {
+variable "default_runner_image" {
   description = "Runner Tags"
   type        = string
 }
 
 variable "values_file" {
   description = "Path to Values file to be passed to gitlab-runner helm templates"
-  default     = "gitlab-runner/values.yaml"
+  default     = null
 }

@@ -1,3 +1,7 @@
+locals {
+  values_file = var.values_file != null ? var.values_file : "${path.module}/gitlab-runner/values.yaml"
+}
+
 //NAMESPACE
 resource "kubernetes_namespace" "gitlab_runner" {
   metadata {
@@ -56,7 +60,7 @@ resource "helm_release" "gitlab_runner" {
 
 
   values = [
-    "${file(var.values_file)}"
+    "${file(local.values_file)}"
   ]
 
   set {

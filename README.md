@@ -56,7 +56,7 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 | runner\_registration\_token | runner registration token | `string` | n/a | yes |
 | runner\_tags | runner tags | `string` | n/a | yes |
 | service\_account | The name of the Service account to create | `string` | `"gitlab-runner-admin"` | no |
-| values\_file | Path to Values file to be passed to gitlab-runner helm templates | `string` | `"gitlab-runner/values.yaml"` | no |
+| values\_file | Path to Values file to be passed to gitlab-runner helm templates | `any` | `null` | no |
 
 ## Outputs
 

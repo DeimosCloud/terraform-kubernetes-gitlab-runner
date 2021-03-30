@@ -16,7 +16,7 @@ imagePullPolicy: IfNotPresent
 ## The GitLab Server URL (with protocol) that want to register the runner against
 ## ref: https://docs.gitlab.com/runner/commands/README.html#gitlab-runner-register
 ##
-# gitlabUrl: http://gitlab.your-domain.com/
+gitlabUrl: https://gitlab.com/
 
 ## The Registration Token for adding new Runners to the GitLab Server. This must
 ## be retrieved from your GitLab Instance.
@@ -98,7 +98,7 @@ rbac:
 
   ## Use the following Kubernetes Service Account name if RBAC is disabled in this Helm chart (see rbac.create)
   ##
-  # serviceAccountName: default
+  serviceAccountName: gitlab-runner-admin
 
   ## Specify annotations for Service Accounts, useful for annotations such as eks.amazonaws.com/role-arn
   ##
@@ -282,6 +282,7 @@ runners:
   ## Service Account to be used for runners
   ##
   # serviceAccountName:
+  serviceAccountName: gitlab-runner-admin
 
   ## If Gitlab is not reachable through $CI_SERVER_URL
   ##
@@ -331,6 +332,21 @@ runners:
   #                mount_path: /var/run/docker.sock
   #                read_only: true
   #                host_path: /var/run/docker.sock
+  template:
+    runners:
+      - custom_build_dir:
+          enabled: true
+        cache_dir: "/tmp/gitlab/cache"
+        kubernetes:
+          volumes:
+            host_path:
+              - name: docker-socket
+                mount_path: /var/run/docker.sock
+                read_only: true
+                host_path: /var/run/docker.sock
+              - name: cache
+                mount_path: /tmp/gitlab/cache
+                host_path: /var/gitlab-runner/cache
 
 ## Configure securitycontext
 ## ref: http://kubernetes.io/docs/user-guide/security-context/

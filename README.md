@@ -3,7 +3,29 @@ Setup ArgoCD on cluster using terraform. Ensure the `kubernetes` provider config
 
 ## Usage
 
-Usage example is present in [examples](./examples) directory.
+```hcl
+module "gitlab_runner" {
+  source                    = "git::ssh://git@gitlab.com/deimosdev/tooling/terraform-modules/terraform-kubernetes-gitlab-runner.git"
+  release_name              = "${var.project_name}-runner-${var.environment}"
+  runner_tags               = var.runner_tags
+  runner_registration_token = var.runner_registration_token
+  default_runner_image      = var.default_runner_image
+  namespace                 = var.gitlab_runner_namespace
+
+  # Pass annotations to service account. This can be for workload/pod/ identity
+  service_account_annotations = {
+    "iam.gke.io/gcp-service-account" = module.workload_identity["gitlab-runner"].gcp_service_account_email
+  }
+
+  # Use Local cache on Kubernetes nodes
+  use_local_cache     = true
+
+  # Mount docker socket instead of using docker-in-docker
+  mount_docker_socket = true
+
+  depends_on = [module.gke_cluster, module.gke_node_pool]
+}
+```
 
 Ensure Kubernetes Provider and Helm Provider settings are correct https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/guides/getting-started#provider-setup
 
@@ -42,20 +64,31 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 | Name | Version |
 |------|---------|
 | helm | ~> 1.3 |
-| kubernetes | ~> 1.13 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| build\_dir | Path on nodes for caching | `bool` | `false` | no |
+| chart\_version | The version of the chart | `string` | `"0.28.0-rc1"` | no |
 | cluster\_role | Cluster role for gitlab runner rbac | `string` | `"gitlab-runner-admin"` | no |
 | cluster\_role\_binding | Cluster role for gitlab runner rbac | `string` | `"gitlab-runner-admin"` | no |
-| default\_runner\_image | Runner Tags | `string` | n/a | yes |
+| concurrent | Configure the maximum number of concurrent jobs | `number` | `10` | no |
+| create\_namespace | (Optional) Create the namespace if it does not yet exist. Defaults to false. | `bool` | `true` | no |
+| default\_runner\_image | Runner Image | `string` | `null` | no |
+| gitlab\_url | The GitLab Server URL (with protocol) that want to register the runner against | `string` | `"https://gitlab.com/"` | no |
+| local\_cache\_dir | Path on nodes for caching | `string` | `"/tmp/gitlab/cache"` | no |
+| mount\_docker\_socket | Path on nodes for caching | `bool` | `false` | no |
 | namespace | n/a | `string` | `"gitlab-runner"` | no |
+| rbac\_enabled | For RBAC Support | `bool` | `true` | no |
 | release\_name | The helm release name | `string` | `"gitlab-runner"` | no |
+| run\_untagged\_jobs | Specify if jobs without tags should be run. https://docs.gitlab.com/ce/ci/runners/#runner-is-allowed-to-run-untagged-jobs | `bool` | `false` | no |
+| runner\_locked | Specify whether the runner should be locked to a specific project/group | `string` | `true` | no |
 | runner\_registration\_token | runner registration token | `string` | n/a | yes |
-| runner\_tags | runner tags | `string` | n/a | yes |
-| service\_account | The name of the Service account to create | `string` | `"gitlab-runner-admin"` | no |
+| runner\_tags | Specify the tags associated with the runner. Comma-separated list of tags. | `string` | n/a | yes |
+| service\_account | The name of the Service account to create | `string` | `"gitlab-runner"` | no |
+| service\_account\_annotations | The annotations to add to the service account | `map` | `{}` | no |
+| use\_local\_cache | Use path on nodes for caching | `bool` | `false` | no |
 | values\_file | Path to Values file to be passed to gitlab-runner helm templates | `any` | `null` | no |
 
 ## Outputs

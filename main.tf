@@ -1,84 +1,86 @@
 locals {
-  values_file = var.values_file != null ? var.values_file : "${path.module}/gitlab-runner/values.yaml"
-}
+  values_file = var.values_file != null ? file(var.values_file) : ""
+  repository  = "https://charts.gitlab.io"
+  chart_name  = "gitlab-runner"
 
-//NAMESPACE
-resource "kubernetes_namespace" "gitlab_runner" {
-  metadata {
-    name = var.namespace
-  }
-}
+  // Config variables
+  cache = ! var.use_local_cache ? "" : <<EOF
+  EOF
 
-resource "kubernetes_service_account" "service_account" {
-  metadata {
-    name      = var.service_account
-    namespace = var.namespace
-  }
-  automount_service_account_token = true
-  depends_on                      = [kubernetes_namespace.gitlab_runner]
-}
-
-// CLUSTER ROLE
-resource "kubernetes_cluster_role" "cluster_role" {
-  metadata {
-    name = var.cluster_role
-  }
-  rule {
-    api_groups = ["*"]
-    resources  = ["*"]
-    verbs      = ["*"]
-  }
-  depends_on = [kubernetes_namespace.gitlab_runner]
-}
-
-//CLUSTER ROLE BINDING
-resource "kubernetes_cluster_role_binding" "cluster_role_binding" {
-  metadata {
-    name = var.cluster_role_binding
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = var.cluster_role
-  }
-  subject {
-    kind      = "ServiceAccount"
-    name      = var.service_account
-    namespace = var.namespace
-  }
-  depends_on = [kubernetes_cluster_role.cluster_role, kubernetes_service_account.service_account]
+  config = <<EOF
+  [[runners]]
+  %{if var.use_local_cache~}
+    cache_dir = "${var.local_cache_dir}"
+  %{endif~}
+    [runners.kubernetes]
+      image = "${var.default_runner_image}"
+      [runners.kubernetes.volumes]
+      %{if var.mount_docker_socket}
+        [[runners.kubernetes.volumes.host_path]]
+          name = "docker-socket"
+          mount_path = "/var/run/docker.sock"
+          read_only = true
+          host_path = "/var/run/docker.sock"
+      %{endif~}
+      %{if var.use_local_cache}
+        [[runners.kubernetes.volumes.host_path]]
+          name = "cache"
+          mount_path = "${var.local_cache_dir}"
+          host_path = "${var.local_cache_dir}"
+      %{endif~}
+  EOF
 }
 
 //INSTALL HELM CHART
 resource "helm_release" "gitlab_runner" {
-  name       = var.release_name
-  repository = path.module
-  chart      = "gitlab-runner"
-  namespace  = var.namespace
-  # force_update = true
-  # dependency_update = true
+  name             = var.release_name
+  repository       = local.repository
+  chart            = local.chart_name
+  namespace        = var.namespace
+  version          = var.chart_version
+  create_namespace = var.create_namespace
 
 
   values = [
-    "${file(local.values_file)}"
+    yamlencode({
+      rbac = {
+        create                    = var.rbac_enabled
+        serviceAccountAnnotations = var.service_account_annotations
+        serviceAccountName        = var.service_account
+      }
+      runner = {
+        serviceAccountName = var.service_account
+      }
+    }),
+    local.values_file
   ]
 
   set {
     type  = "string"
+    name  = "gitlabUrl"
+    value = var.gitlab_url
+  }
+
+  set {
+    name  = "concurrent"
+    value = var.concurrent
+  }
+
+
+  set {
+    name  = "runnerRegistrationToken"
+    value = var.runner_registration_token
+  }
+
+
+  set {
     name  = "runners.image"
     value = var.default_runner_image
   }
 
   set {
-    type  = "string"
-    name  = "runnerRegistrationToken"
-    value = var.runner_registration_token
-  }
-
-  set {
-    type  = "string"
-    name  = "runners.serviceAccountName"
-    value = var.service_account
+    name  = "runners.runUntagged"
+    value = var.run_untagged_jobs
   }
 
   set {
@@ -86,5 +88,16 @@ resource "helm_release" "gitlab_runner" {
     name  = "runners.tags"
     value = var.runner_tags
   }
-  depends_on = [kubernetes_cluster_role_binding.cluster_role_binding]
+
+  set {
+    type  = "string"
+    name  = "runners.locked"
+    value = var.runner_locked
+  }
+
+  set {
+    type  = "string"
+    name  = "runners.config"
+    value = local.config
+  }
 }

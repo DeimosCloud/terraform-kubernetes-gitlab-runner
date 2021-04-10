@@ -13,7 +13,9 @@ locals {
     cache_dir = "${var.local_cache_dir}"
   %{endif~}
     [runners.kubernetes]
-      image = "${var.default_runner_image}"
+    %{if var.default_container_image != null}
+      image = "${var.default_container_image}"
+    %{endif}
       [runners.kubernetes.volumes]
       %{if var.mount_docker_socket}
         [[runners.kubernetes.volumes.host_path]]
@@ -62,6 +64,11 @@ resource "helm_release" "gitlab_runner" {
   }
 
   set {
+    name  = "image"
+    value = "gitlab/gitlab-runner:${var.runner_image_tag}"
+  }
+
+  set {
     name  = "concurrent"
     value = var.concurrent
   }
@@ -70,12 +77,6 @@ resource "helm_release" "gitlab_runner" {
   set {
     name  = "runnerRegistrationToken"
     value = var.runner_registration_token
-  }
-
-
-  set {
-    name  = "runners.image"
-    value = var.default_runner_image
   }
 
   set {

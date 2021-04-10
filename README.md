@@ -75,7 +75,7 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 | cluster\_role\_binding | Cluster role for gitlab runner rbac | `string` | `"gitlab-runner-admin"` | no |
 | concurrent | Configure the maximum number of concurrent jobs | `number` | `10` | no |
 | create\_namespace | (Optional) Create the namespace if it does not yet exist. Defaults to false. | `bool` | `true` | no |
-| default\_runner\_image | Runner Image | `string` | `null` | no |
+| default\_container\_image | Default container image to use for builds when none is specified | `string` | `"ubuntu:18.04"` | no |
 | gitlab\_url | The GitLab Server URL (with protocol) that want to register the runner against | `string` | `"https://gitlab.com/"` | no |
 | local\_cache\_dir | Path on nodes for caching | `string` | `"/tmp/gitlab/cache"` | no |
 | mount\_docker\_socket | Path on nodes for caching | `bool` | `false` | no |
@@ -83,6 +83,7 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 | rbac\_enabled | For RBAC Support | `bool` | `true` | no |
 | release\_name | The helm release name | `string` | `"gitlab-runner"` | no |
 | run\_untagged\_jobs | Specify if jobs without tags should be run. https://docs.gitlab.com/ce/ci/runners/#runner-is-allowed-to-run-untagged-jobs | `bool` | `false` | no |
+| runner\_image\_tag | The docker gitlab runner version. https://hub.docker.com/r/gitlab/gitlab-runner/tags/ | `string` | `"alpine-v13.11.0-rc1"` | no |
 | runner\_locked | Specify whether the runner should be locked to a specific project/group | `string` | `true` | no |
 | runner\_registration\_token | runner registration token | `string` | n/a | yes |
 | runner\_tags | Specify the tags associated with the runner. Comma-separated list of tags. | `string` | n/a | yes |
@@ -95,7 +96,9 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 
 | Name | Description |
 |------|-------------|
+| chart\_version | The chart version |
 | namespace | The namespace gitlab-runner was deployed in |
 | release\_name | The helm release name |
+| runner\_version | The runner version |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

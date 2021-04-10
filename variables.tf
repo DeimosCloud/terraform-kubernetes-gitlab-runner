@@ -3,6 +3,11 @@ variable "namespace" {
   default = "gitlab-runner"
 }
 
+variable "runner_image_tag" {
+  description = "The docker gitlab runner version. https://hub.docker.com/r/gitlab/gitlab-runner/tags/"
+  default     = "alpine-v13.11.0-rc1"
+}
+
 variable "create_namespace" {
   type        = bool
   default     = true
@@ -63,10 +68,10 @@ variable "release_name" {
   default     = "gitlab-runner"
 }
 
-variable "default_runner_image" {
-  description = "Runner Image"
+variable "default_container_image" {
+  description = "Default container image to use for builds when none is specified"
   type        = string
-  default     = null
+  default     = "ubuntu:18.04"
 }
 
 variable "values_file" {

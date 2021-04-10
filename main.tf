@@ -4,7 +4,7 @@ locals {
   chart_name  = "gitlab-runner"
 
   // Config variables
-  cache = ! var.use_local_cache ? "" : <<EOF
+  cache = !var.use_local_cache ? "" : <<EOF
   EOF
 
   config = <<EOF
@@ -13,23 +13,34 @@ locals {
     cache_dir = "${var.local_cache_dir}"
   %{endif~}
     [runners.kubernetes]
-    %{if var.default_container_image != null}
+    %{~if var.default_container_image != null~}
       image = "${var.default_container_image}"
-    %{endif}
+    %{~endif~}
+      priviledged = ${var.priviledged}
+      [runners.kubernetes.affinity]
+      [runners.kubernetes.node_selector]
+      [runners.kubernetes.pod_labels]
+      [runners.kubernetes.pod_security_context]
+      %{~if var.mount_docker_socket~}
+        fs_group = ${var.docker_fs_group}
+      %{~endif~}
+      %{~if var.run_container_as_user != null~}
+        run_as_user: ${var.run_container_as_user}
+      %{~endif~}
       [runners.kubernetes.volumes]
-      %{if var.mount_docker_socket}
+      %{~if var.mount_docker_socket~}
         [[runners.kubernetes.volumes.host_path]]
           name = "docker-socket"
           mount_path = "/var/run/docker.sock"
           read_only = true
           host_path = "/var/run/docker.sock"
-      %{endif~}
-      %{if var.use_local_cache}
+      %{~endif~}
+      %{~if var.use_local_cache~}
         [[runners.kubernetes.volumes.host_path]]
           name = "cache"
           mount_path = "${var.local_cache_dir}"
           host_path = "${var.local_cache_dir}"
-      %{endif~}
+      %{~endif~}
   EOF
 }
 

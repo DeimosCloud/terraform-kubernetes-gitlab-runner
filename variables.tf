@@ -107,9 +107,28 @@ variable "local_cache_dir" {
 variable "mount_docker_socket" {
   default     = false
   description = "Path on nodes for caching"
+  type        = bool
 }
 
 variable "build_dir" {
-  default     = false
+  default     = null
+  type        = string
   description = "Path on nodes for caching"
+}
+
+variable "run_container_as_user" {
+  default     = null
+  type        = string
+  description = "SecurityContext: runAsUser for all running job pods"
+}
+
+variable "priviledged" {
+  default     = false
+  type        = bool
+  description = "Run all containers with the privileged flag enabled. This will allow the docker:dind image to run if you need to run Docker"
+}
+
+variable "docker_fs_group" {
+  description = "The fsGroup to use for docker. This is added to security context when mount_docker_socket is enabled"
+  default     = 412
 }

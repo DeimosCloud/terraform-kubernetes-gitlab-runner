@@ -92,6 +92,7 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 | runner\_tags | Specify the tags associated with the runner. Comma-separated list of tags. | `string` | n/a | yes |
 | service\_account | The name of the Service account to create | `string` | `"gitlab-runner"` | no |
 | service\_account\_annotations | The annotations to add to the service account | `map` | `{}` | no |
+| service\_account\_clusterwide\_access | Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace | `bool` | `false` | no |
 | use\_local\_cache | Use path on nodes for caching | `bool` | `false` | no |
 | values\_file | Path to Values file to be passed to gitlab-runner helm templates | `any` | `null` | no |
 

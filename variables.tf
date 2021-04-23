@@ -25,6 +25,11 @@ variable "service_account_annotations" {
   default     = {}
 }
 
+variable "service_account_clusterwide_access" {
+  description = "Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace"
+  default     = false
+}
+
 variable "chart_version" {
   description = "The version of the chart"
   default     = "0.28.0-rc1"

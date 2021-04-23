@@ -60,9 +60,7 @@ resource "helm_release" "gitlab_runner" {
         create                    = var.rbac_enabled
         serviceAccountAnnotations = var.service_account_annotations
         serviceAccountName        = var.service_account
-      }
-      runner = {
-        serviceAccountName = var.service_account
+        clusterWideAccess         = var.service_account_clusterwide_access
       }
     }),
     local.values_file

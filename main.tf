@@ -4,7 +4,7 @@ locals {
   chart_name  = "gitlab-runner"
 
   // Config variables
-  cache = !var.use_local_cache ? "" : <<EOF
+  cache = ! var.use_local_cache ? "" : <<EOF
   EOF
 
   config = <<EOF
@@ -15,6 +15,11 @@ locals {
     [runners.kubernetes]
     %{~if var.default_container_image != null~}
       image = "${var.default_container_image}"
+    %{~endif~}
+    %{~if var.create_service_account == true~}
+      service_account = "${var.release_name}-${var.service_account}"
+    %{~else~}
+      service_account = "${var.service_account}"
     %{~endif~}
       priviledged = ${var.priviledged}
       [runners.kubernetes.affinity]
@@ -57,7 +62,7 @@ resource "helm_release" "gitlab_runner" {
   values = [
     yamlencode({
       rbac = {
-        create                    = var.rbac_enabled
+        create                    = var.create_service_account
         serviceAccountAnnotations = var.service_account_annotations
         serviceAccountName        = var.service_account
         clusterWideAccess         = var.service_account_clusterwide_access

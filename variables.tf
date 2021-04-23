@@ -35,18 +35,6 @@ variable "chart_version" {
   default     = "0.28.0-rc1"
 }
 
-variable "cluster_role" {
-  description = "Cluster role for gitlab runner rbac"
-  type        = string
-  default     = "gitlab-runner-admin"
-}
-
-variable "cluster_role_binding" {
-  description = "Cluster role for gitlab runner rbac"
-  type        = string
-  default     = "gitlab-runner-admin"
-}
-
 variable "runner_registration_token" {
   description = "runner registration token"
   type        = string
@@ -94,9 +82,9 @@ variable "concurrent" {
   description = "Configure the maximum number of concurrent jobs"
 }
 
-variable "rbac_enabled" {
+variable "create_service_account" {
   default     = true
-  description = "For RBAC Support"
+  description = "If true, the service account, it's role and rolebinding will be created, else, the service account is assumed to already be created"
 }
 
 variable "use_local_cache" {

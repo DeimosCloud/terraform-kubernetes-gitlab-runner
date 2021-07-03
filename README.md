@@ -1,11 +1,11 @@
 # Terraform Kubernetes Gitlab-Runner Module
-Setup ArgoCD on cluster using terraform. Ensure the `kubernetes` provider configuration and `helm` provider configuration works fine
+Setup Gitlab Runner on cluster using terraform. Ensure the `kubernetes` provider configuration and `helm` provider configuration works fine
 
 ## Usage
 
 ```hcl
 module "gitlab_runner" {
-  source                    = "git::ssh://git@gitlab.com/deimosdev/tooling/terraform-modules/terraform-kubernetes-gitlab-runner.git"
+  source                    = "DeimosCloud/gitlab-runner/kubernetes"
   release_name              = "${var.project_name}-runner-${var.environment}"
   runner_tags               = var.runner_tags
   runner_registration_token = var.runner_registration_token
@@ -69,13 +69,18 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| azure\_cache\_conf | Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscacheazure-section. Only used when var.use\_local\_cache is false | `map` | `{}` | no |
 | build\_dir | Path on nodes for caching | `string` | `null` | no |
+| cache\_path | Name of the path to prepend to the cache URL. Only used when var.use\_local\_cache is false | `any` | `null` | no |
+| cache\_shared | Enables cache sharing between runners. Only used when var.use\_local\_cache is false | `bool` | `false` | no |
+| cache\_type | One of: s3, gcs, azure. Only used when var.use\_local\_cache is false | `any` | `null` | no |
 | chart\_version | The version of the chart | `string` | `"0.28.0-rc1"` | no |
 | concurrent | Configure the maximum number of concurrent jobs | `number` | `10` | no |
 | create\_namespace | (Optional) Create the namespace if it does not yet exist. Defaults to false. | `bool` | `true` | no |
 | create\_service\_account | If true, the service account, it's role and rolebinding will be created, else, the service account is assumed to already be created | `bool` | `true` | no |
 | default\_container\_image | Default container image to use for builds when none is specified | `string` | `"ubuntu:18.04"` | no |
 | docker\_fs\_group | The fsGroup to use for docker. This is added to security context when mount\_docker\_socket is enabled | `number` | `412` | no |
+| gcs\_cache\_conf | Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscachegcs-section. Only used when var.use\_local\_cache is false | `map` | `{}` | no |
 | gitlab\_url | The GitLab Server URL (with protocol) that want to register the runner against | `string` | `"https://gitlab.com/"` | no |
 | local\_cache\_dir | Path on nodes for caching | `string` | `"/tmp/gitlab/cache"` | no |
 | mount\_docker\_socket | Path on nodes for caching | `bool` | `false` | no |
@@ -92,6 +97,8 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 | runner\_locked | Specify whether the runner should be locked to a specific project/group | `string` | `true` | no |
 | runner\_registration\_token | runner registration token | `string` | n/a | yes |
 | runner\_tags | Specify the tags associated with the runner. Comma-separated list of tags. | `string` | n/a | yes |
+| s3\_cache\_conf | Cache parameters define using S3 for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section. Only used when var.use\_local\_cache is false | `map` | `{}` | no |
+| secret\_volumes | Secret volume configuration instructs Kubernetes to use a secret that is defined in Kubernetes cluster and mount it inside of the containes as defined https://docs.gitlab.com/runner/executors/kubernetes.html#secret-volumes | <pre>object({<br>    name       = string<br>    mount_path = string<br>    read_only  = string<br>    items      = map(string)<br>  })</pre> | <pre>{<br>  "items": {},<br>  "mount_path": null,<br>  "name": null,<br>  "read_only": null<br>}</pre> | no |
 | service\_account | The name of the Service account to create | `string` | `"gitlab-runner"` | no |
 | service\_account\_annotations | The annotations to add to the service account | `map` | `{}` | no |
 | service\_account\_clusterwide\_access | Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace | `bool` | `false` | no |

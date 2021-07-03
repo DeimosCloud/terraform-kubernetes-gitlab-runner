@@ -145,3 +145,51 @@ variable "pod_annotations" {
   description = "A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. "
   default     = {}
 }
+
+
+variable "cache_type" {
+  description = "One of: s3, gcs, azure. Only used when var.use_local_cache is false"
+  default     = null
+}
+
+variable "cache_path" {
+  description = "Name of the path to prepend to the cache URL. Only used when var.use_local_cache is false"
+  default     = null
+}
+
+variable "cache_shared" {
+  description = "Enables cache sharing between runners. Only used when var.use_local_cache is false"
+  default     = false
+}
+
+variable "azure_cache_conf" {
+  description = "Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscacheazure-section. Only used when var.use_local_cache is false"
+  default     = {}
+}
+
+variable "gcs_cache_conf" {
+  description = "Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscachegcs-section. Only used when var.use_local_cache is false"
+  default     = {}
+}
+
+variable "s3_cache_conf" {
+  description = "Cache parameters define using S3 for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section. Only used when var.use_local_cache is false"
+  default     = {}
+}
+
+variable "secret_volumes" {
+  description = "Secret volume configuration instructs Kubernetes to use a secret that is defined in Kubernetes cluster and mount it inside of the containes as defined https://docs.gitlab.com/runner/executors/kubernetes.html#secret-volumes"
+  type = object({
+    name       = string
+    mount_path = string
+    read_only  = string
+    items      = map(string)
+  })
+
+  default = {
+    name       = null
+    mount_path = null
+    read_only  = null
+    items      = {}
+  }
+}

@@ -12,19 +12,27 @@ on:
 jobs:
   validate:
     name: Validate
-    runs-on: [self-hosted, linux, ARM64]
+    runs-on: ubuntu-latest
     steps:
     - name: Check out code
       uses: actions/checkout@v1
 
-    - name: Run a Terraform init
-      uses: docker://hashicorp/terraform:0.12.11
+    - name: Install Terraform
+      uses: hashicorp/setup-terraform@v1
       with:
-        entrypoint: terraform
-        args: init
+        terraform_version: 0.13.7
+
+    - name: Run a Terraform init
+      run: terraform init
 
     - name: Run a Terraform validate
-      uses: docker://hashicorp/terraform:0.12.11
-      with:
-        entrypoint: terraform
-        args: validate
+      run: terraform validate
+
+    - name: Run a Terraform fmt -check
+      run: terraform fmt -check
+
+    - uses: terraform-linters/setup-tflint@v1
+      name: Setup TFLint
+
+    - name: Run TFLint
+      run: tflint

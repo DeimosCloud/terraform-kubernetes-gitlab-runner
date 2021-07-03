@@ -24,7 +24,21 @@ locals {
       priviledged = ${var.priviledged}
       [runners.kubernetes.affinity]
       [runners.kubernetes.node_selector]
+      %{~for key, value in var.node_selectors~}
+        ${key} = ${value}
+      %{~endfor~}
+      [runners.kubernetes.node_tolerations]
+      %{~for key, value in var.node_tolerations~}
+        ${key} = ${value}
+      %{~endfor~}
       [runners.kubernetes.pod_labels]
+      %{~for key, value in var.pod_labels~}
+        ${key} = ${value}
+      %{~endfor~}
+      [runners.kubernetes.pod_annotations]
+      %{~for key, value in var.pod_annotations~}
+        ${key} = ${value}
+      %{~endfor~}
       [runners.kubernetes.pod_security_context]
       %{~if var.mount_docker_socket~}
         fs_group = ${var.docker_fs_group}

@@ -80,6 +80,10 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 | local\_cache\_dir | Path on nodes for caching | `string` | `"/tmp/gitlab/cache"` | no |
 | mount\_docker\_socket | Path on nodes for caching | `bool` | `false` | no |
 | namespace | n/a | `string` | `"gitlab-runner"` | no |
+| node\_selectors | A map of node selectors to apply to the pods | `map` | `{}` | no |
+| node\_tolerations | A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings | `map` | `{}` | no |
+| pod\_annotations | A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. | `map` | `{}` | no |
+| pod\_labels | A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. | `map` | `{}` | no |
 | priviledged | Run all containers with the privileged flag enabled. This will allow the docker:dind image to run if you need to run Docker | `bool` | `false` | no |
 | release\_name | The helm release name | `string` | `"gitlab-runner"` | no |
 | run\_container\_as\_user | SecurityContext: runAsUser for all running job pods | `string` | `null` | no |

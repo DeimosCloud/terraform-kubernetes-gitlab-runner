@@ -125,3 +125,23 @@ variable "docker_fs_group" {
   description = "The fsGroup to use for docker. This is added to security context when mount_docker_socket is enabled"
   default     = 412
 }
+
+variable "node_selectors" {
+  description = "A map of node selectors to apply to the pods"
+  default     = {}
+}
+
+variable "node_tolerations" {
+  description = "A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings"
+  default     = {}
+}
+
+variable "pod_labels" {
+  description = "A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. "
+  default     = {}
+}
+
+variable "pod_annotations" {
+  description = "A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. "
+  default     = {}
+}

@@ -30,7 +30,8 @@ locals {
   %{~else~}
     service_account = "${var.service_account}"
   %{~endif~}
-    priviledged = ${var.priviledged}
+    image_pull_secrets = ${jsonencode(var.image_pull_secrets)}
+    priviledged     = ${var.priviledged}
     [runners.kubernetes.affinity]
     [runners.kubernetes.node_selector]
     %{~for key, value in var.node_selectors~}

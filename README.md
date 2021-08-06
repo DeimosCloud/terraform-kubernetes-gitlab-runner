@@ -82,6 +82,7 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 | docker\_fs\_group | The fsGroup to use for docker. This is added to security context when mount\_docker\_socket is enabled | `number` | `412` | no |
 | gcs\_cache\_conf | Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscachegcs-section. Only used when var.use\_local\_cache is false | `map` | `{}` | no |
 | gitlab\_url | The GitLab Server URL (with protocol) that want to register the runner against | `string` | `"https://gitlab.com/"` | no |
+| image\_pull\_secrets | A array of secrets that are used to authenticate Docker image pulling. | `list(string)` | `[]` | no |
 | local\_cache\_dir | Path on nodes for caching | `string` | `"/tmp/gitlab/cache"` | no |
 | mount\_docker\_socket | Path on nodes for caching | `bool` | `false` | no |
 | namespace | n/a | `string` | `"gitlab-runner"` | no |

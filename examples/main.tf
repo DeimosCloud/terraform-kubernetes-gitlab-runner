@@ -64,7 +64,7 @@ module "gke_node_pool_gitlab" {
 
   # Labels will be used in node selectors to ensure pods get scheduled to nodes with the same labels
   labels = {
-    "node.kubernetes.io/kind" = "ci"
+    "node-kind" = "ci"
   }
 }
 
@@ -77,13 +77,14 @@ module "gitlab-runner" {
   runner_tags               = var.runner_tags
   runner_registration_token = var.runner_registration_token
   namespace                 = var.runner_namespace
+  image_pull_secrets        = ["some-pull-secret"]
 
   # Mount docker socket instead of using docker-in-docker
   mount_docker_socket = true
 
   # Job pods should be scheduled on nodes with this label
   node_selectors = {
-    "node.kubernetes.io/kind" = "ci"
+    "node-kind" = "ci"
   }
 
   # Pods should be able to tolerate taints

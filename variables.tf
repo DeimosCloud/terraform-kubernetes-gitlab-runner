@@ -193,3 +193,9 @@ variable "secret_volumes" {
     items      = {}
   }
 }
+
+variable "image_pull_secrets" {
+  description = "A array of secrets that are used to authenticate Docker image pulling."
+  type        = list(string)
+  default     = []
+}

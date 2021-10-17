@@ -4,6 +4,7 @@ locals {
 %{if var.use_local_cache~}
   cache_dir = "${var.local_cache_dir}"
 %{~else~}
+  %{if var.cache_type != null~}
   [runners.cache]
     Type = "${var.cache_type}"
     Path = "${var.cache_path}"
@@ -20,6 +21,7 @@ locals {
     %{~for key, value in var.azure_cache_conf~}
       ${key} = ${value}
     %{~endfor~}
+    %{~endif~}
 %{~endif}
   [runners.kubernetes]
   %{~if var.default_container_image != null~}

@@ -1,0 +1,12 @@
+{
+    "type": "service_account",
+    "project_id": "deimos-internal-playground",
+    "private_key_id": "68e0212e5443a202c363414d7d7b870e552ec80d",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCptTA6VMXYFyQD\nMkE3Efg6bjtDojLoD5JjIxqiPDpxQu4PHZIt7hwDfE7xC1404qge37ZcDQv2JX3Z\n9T5efFjnUDWjpm/rF8AYliJPrP01NeklKonq3JDaz3nuNJKJkxTvMNHvn/lzooF2\nn266b6FjlSGCYqnCxxDfJKNpLFWBermWB/vg1CYR+FU3+Q6hGWhC0xqMGSA9HPv1\nN8YMrSaqQSiasmr18YGldmHcKlF+tOIxkSDbeugUi1sfuT0b+zWSEZIbATOmAQyV\nOA5DPAcaKCj3xzRh1H+7bfqE6DjLF44bg9joL4KpuWMO9gkh2fPACtUbNUEQxtNh\nmav85jmdAgMBAAECggEAUjJymgYeT2Qh6rRoFuLKvo5OgRsqGfEU35SMnWCbk+kt\ngb+6YimugteuKpztc6MGd/G2E060aPPOyYc5vqzuqJbWbB28nnsB7Uamdr3cZG3o\nrzoz08AiHwEX1xK6mQzWumWEgVIUEfh3STu+d2mDG0cLlGnyPGeLmfDWfyXcglni\nP2Pd1cZV+/d1lVXGD5/+sa/NyUpRSIyoESQhpTNy7ID8++j06xHHXAMyLt5yqJTh\njHdvQlOvgy7lGk9GK1J5rh6u3QmkfSjabTWvR5IVo6jKIpkSjBmIEQh4ErtIZ+bS\nXnKZiZvDCU94NGM9f8YEeWfwwGvmG04WrvBMZ0bIhwKBgQDoC14S8TaSfAE6qOva\npCAvF1gQ/6xHU4cc2M+rdCtOP1GoGmZPXgSb8bS2syk+pzU0cam4BikYNVHGD/Kj\nd734ysXoWyzRwzkfurlpDcniV4wjFkoDrcF5Di7lLwE1xN2YtGHDWgh05newCuSn\nBDo01kOKMvfMpAwpuLSUT8rlTwKBgQC7OlgvvZmFlSvbF/+rx+wUORw9GkYXQlsy\nzlpc71VIIxga0uPwXYrAiGIPyx6ioGcwR/28QByCI7eBWXAA5Uoc7fCKvv+3ABcO\nqkH2C5LzLNxsPtSZuBYCPZNWIqjA9Ie56fyBhLTF40UrzQyz11vDxd2+d1emO1zC\nWq+J713PUwKBgQDhg/K4vB9KfCQBq5wVEP+KZMidNK5tX5tniLtDqZJQ6K7mjkmy\nhvA50s3L5hGGp6DIyFKm263iric8M9Gf10cU3ZU7/ihv8Ki60pFRrSnwxR8YFph2\nPM9UZFllOaqWZC7tMxn0brLbUgUuXVfdjfk30qkvTduQ0jpT7gPqRCYvdwKBgDXP\nqxDtmXY/TX+HAkDJER0u3OLi7ko5FCUiEe6sCwLUs1TiUAkBmaOEj0qiwodTOtUx\nm8fDVW5B/bf7kKlxPT/bU0tNYgmiyP26CYNCCFZECoZB+LDFq+2w7OvQwlfS8D+K\n9Lv0/E/z5imUoZX+y60U7YqUmmh4n0xs7A7k8T1pAoGANdUfDgLYSF+nTmefuy3m\nX7Vs+K1sLi0VcD3t01SQHyUq6kXEL4pGJXPP8z3ut8a16Gij5/ouZ8mN2wt/bMpE\nd5qml+z5XbEhQtsefHTS3QRIAtJQlUlJWkdNvvg5Y7CVUk5r7iVzbecK64n2bW5e\niQp3kqIaara6gVuuSw6jN3M=\n-----END PRIVATE KEY-----\n",
+    "client_email": "terraform-team-test@deimos-internal-playground.iam.gserviceaccount.com",
+    "client_id": "101161189975011933004",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/terraform-team-test%40deimos-internal-playground.iam.gserviceaccount.com"
+  }

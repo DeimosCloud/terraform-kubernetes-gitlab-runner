@@ -161,4 +161,50 @@ module "private_gke_service_account" {
   description           = var.cluster_service_account_description
 }
 
+#----------------------------------------------------------------------------------------------------------------------
+# GITLAB RUNNER START
+#data.google_secret_manager_secret_version.private_gke_runner_registration_token.secret_data
+#"github.com/DeimosCloud/terraform-kubernetes-gitlab-runner"
+#----------------------------------------------------------------------------------------------------------------------
+module "private_gitlab_runner" {
+  source                    = "../modules/gitlab-runner-master"
+  release_name              = "${var.project_name}-runner"
+  runner_tags               = var.private_runner_tags
+  runner_registration_token = data.google_secret_manager_secret_version.private_gke_runner_registration_token.secret_data
+  default_container_image   = var.default_runner_image
+  depends_on                = [module.private_gke_cluster]
+  mount_docker_socket       = true
+  gitlab_url                = var.gitlab_url
+}
 
+module "private_gke_imagepullsecret" {
+  source    = "../modules/gke-imagepullsecret"
+  name      = var.imagepullsecret_name
+  data = {
+    ".dockerconfigjson" = <<DOCKER
+          {
+            "auths": {
+              "${data.google_secret_manager_secret_version.registry_server.secret_data}": {
+                "auth": "${base64encode("${data.google_secret_manager_secret_version.registry_username.secret_data}:${module.gcr_reader_service_account.key}")}"
+              }
+            }
+          }
+          DOCKER
+  }
+}
+
+module "gcr_reader_service_account" {
+  source        = "terraform-google-modules/service-accounts/google"
+  version       = "~> 3.0.1"
+  description   = "Service Account Used by Kubernetes for Read Registry Access (Managed By Terraform)"
+  display_name  = "Terraform Managed GCR Reader Service Account"
+  generate_keys = true
+  project_id    = var.project_id
+  prefix        = "${var.project_name}-sa"
+  names         = ["gcr-reader"]
+  project_roles = [
+    "${var.project_id}=>roles/storage.objectViewer",
+
+
+  ]
+}

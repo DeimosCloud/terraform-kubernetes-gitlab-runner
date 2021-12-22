@@ -23,7 +23,7 @@ variable "service_account" {
 variable "image_pull_secret" {
   description = "The name of the Image Pull Secret to use"
   type        = string
-  default     = null
+  default     = "dev-gcr-key"
 }
 
 variable "tolerations" {

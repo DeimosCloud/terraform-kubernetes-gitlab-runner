@@ -17,7 +17,7 @@ resource "google_compute_firewall" "allow-external-ssh" {
 
   allow {
     protocol = "tcp"
-    ports    = ["22"]
+    ports    = ["22", "1194"]
   }
 
   source_ranges = ["0.0.0.0/0"]

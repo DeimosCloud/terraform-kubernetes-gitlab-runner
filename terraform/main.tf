@@ -177,22 +177,9 @@ module "private_gitlab_runner" {
   gitlab_url                = var.gitlab_url
 }
 
-module "private_gke_imagepullsecret" {
-  source    = "../modules/gke-imagepullsecret"
-  name      = var.imagepullsecret_name
-  data = {
-    ".dockerconfigjson" = <<DOCKER
-          {
-            "auths": {
-              "${data.google_secret_manager_secret_version.registry_server.secret_data}": {
-                "auth": "${base64encode("${data.google_secret_manager_secret_version.registry_username.secret_data}:${module.gcr_reader_service_account.key}")}"
-              }
-            }
-          }
-          DOCKER
-  }
-}
-
+#-------------------------------------------
+# Service Account with read Access to GCR
+#-------------------------------------------
 module "gcr_reader_service_account" {
   source        = "terraform-google-modules/service-accounts/google"
   version       = "~> 3.0.1"
@@ -207,4 +194,27 @@ module "gcr_reader_service_account" {
 
 
   ]
+}
+
+#------------------------------
+#This service has been created will be recreated if uncommented
+#Uncomment only if you would like to providion a New Pull Secret
+#==================================
+# IMAGE PULL SECRET
+#------------------------------
+module "private_gke_imagepullsecret" {
+  source    = "../modules/gke-imagepullsecret"
+  name      = var.imagepullsecret_name
+
+  data = {
+    ".dockerconfigjson" = <<DOCKER
+          {
+            "auths": {
+              "${data.google_secret_manager_secret_version.registry_server.secret_data}": {
+                "auth": "${base64encode("${data.google_secret_manager_secret_version.registry_username.secret_data}:${module.gcr_reader_service_account.key}")}"
+              }
+            }
+          }
+          DOCKER
+  }
 }

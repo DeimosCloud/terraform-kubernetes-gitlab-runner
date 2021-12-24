@@ -1,0 +1,16 @@
+#image:
+#  name: hashicorp/terraform:0.14.7
+#  entrypoint: [""]
+
+stages:
+  - format
+  - validate
+  - plan
+  - apply
+
+include:
+  - local: _ci/01-tf_fmt.yml
+  - local: _ci/02-tf_validate.yml
+  - local: _ci/03-tf_plan.yml
+  - local: _ci/04-tf_apply.yml
+  - local: _ci/05-tf_check_plan.yml

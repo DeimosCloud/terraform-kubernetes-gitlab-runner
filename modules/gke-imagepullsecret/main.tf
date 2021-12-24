@@ -9,7 +9,7 @@ terraform {
 resource "kubernetes_secret" "image-pull-secret" {
   metadata {
     name      = var.name
-    namespace = var.namespace
+
   }
 
   data = var.data

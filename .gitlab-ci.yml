@@ -1,16 +1,17 @@
-#image:
-#  name: hashicorp/terraform:0.14.7
-#  entrypoint: [""]
-
-stages:
-  - format
-  - validate
-  - plan
-  - apply
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml
 
 include:
-  - local: _ci/01-tf_fmt.yml
-  - local: _ci/02-tf_validate.yml
-  - local: _ci/03-tf_plan.yml
-  - local: _ci/04-tf_apply.yml
-  - local: _ci/05-tf_check_plan.yml
+  - template: Terraform/Base.latest.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
+
+stages:
+  - validate
+
+
+
+validate:
+  extends: .terraform:validate
+  needs: []
+

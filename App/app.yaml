@@ -1,7 +1,7 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: depoyment
 metadata:
-  name: app-demo
+  name: simple-web-app-deploy-d889cbdbf-zr2hl
   namespace: default
 spec:
   replicas: 1
@@ -20,13 +20,15 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-entrypoint
+  name: simple-web-app-deploy
   namespace: default
 spec:
   type: NodePort
   selector:
     bb: web
   ports:
-  - port: 3000
-    targetPort: 3000
-    nodePort: 30001
+  - port: 8080
+    targetPort: 8080
+    nodePort: 32411
+
+    

@@ -14,3 +14,18 @@ variable "gitlab_url" {
   description = "The GitLab Server URL (with protocol) that want to register the runner against"
   default     = "http://34.139.41.59"
 }
+
+ variable "node_selectors" {
+  default = {
+    "node-kind" = "ci"
+  }
+    
+  }
+
+
+  variable "gitlab_tolerations" {
+  description = "Tolerations for the gitlab"
+  default = {
+    "gitlab-runner=true" = "NoSchedule"
+  }
+}

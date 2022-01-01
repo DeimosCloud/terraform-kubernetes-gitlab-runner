@@ -19,7 +19,7 @@ resource "random_id" "this" {
 #------------------------------
 # VPC
 #------------------------------
-# "The Virtual Network for the test-env Applications"
+#"The Virtual Network for the test-env Applications"
 module "private_vpc" {
   source               = "gruntwork-io/network/google//modules/vpc-network"
   version              = "~>0.9.0"
@@ -83,7 +83,7 @@ module "private_gke_node_pool" {
   tags         = var.gke_node_pool_tags
   labels = {
     all-pools     = "true"
-    gitlab-runner = "true"
+    gitlab-runner = "false"
   }
 
   depends_on = [module.private_gke_cluster]
@@ -108,6 +108,7 @@ module "private_gke_node_pool_gitlab" {
   #service_account = module.private_gke_service_account.email
   oauth_scopes    = var.gke_node_pool_oauth_scopes
   tags            = var.gke_node_pool_tags
+  taints          = var.gke_node_pool_taints
 
 
 
@@ -155,7 +156,7 @@ module "gitlab_server" {
 module "private_gke_service_account" {
   source                = "gruntwork-io/gke/google//modules/gke-service-account"
   version               = "~>0.6.0"
-  name                  = "${local.project}-gke-sa-${var.environment}"
+  name                  = "${local.project}-gke-sa"
   project               = var.project_id
   service_account_roles = var.service_account_roles
   description           = var.cluster_service_account_description
@@ -174,7 +175,11 @@ module "private_gitlab_runner" {
   default_container_image   = var.default_runner_image
   depends_on                = [module.private_gke_cluster]
   mount_docker_socket       = true
-  gitlab_url                = var.gitlab_url
+  tolerations               = var.gitlab_tolerations
+ 
+
+  service_account_clusterwide_access = true
+  use_local_cache                    = true
 }
 
 #-------------------------------------------

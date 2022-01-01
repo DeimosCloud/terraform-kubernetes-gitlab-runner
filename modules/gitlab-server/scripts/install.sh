@@ -16,7 +16,7 @@ sudo gitlab-ctl pg-upgrade
 sudo gitlab-ctl restart
 
 #the URL at which you want to access your GitLab instance
-#sudo EXTERNAL_URL="http://34.139.41.59" apt-get install gitlab-ce
+#sudo EXTERNAL_URL="http://34.138.145.66" apt-get install gitlab-ce
   
     
   

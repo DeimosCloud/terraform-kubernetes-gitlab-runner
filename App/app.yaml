@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: depoyment
 metadata:
-  name: simple-web-app-deploy-d889cbdbf-zr2hl
+  name: simple-web-app
   namespace: default
 spec:
   replicas: 1
@@ -20,10 +20,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: simple-web-app-deploy
+  name: simple-web-app
   namespace: default
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     bb: web
   ports:

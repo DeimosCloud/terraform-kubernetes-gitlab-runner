@@ -10,7 +10,6 @@ build-dev:
   stage: build
   script:
     - echo "Building the image and pushing to GCR..."
-    - docker-credential-gcr configure-docker --registries="asia.gcr.io"
 
 deploy-dev:
   stage: deploy

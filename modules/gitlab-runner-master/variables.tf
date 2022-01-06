@@ -36,6 +36,14 @@ variable "tolerations" {
   }
 }
 
+variable "node_selectors" {
+  description = "NodeSelector for Gitlab node pool"
+  default = {
+    key    = "node-kind" 
+    value  = "private_gitlab_runner"
+   }
+}
+
 
 variable "service_account_annotations" {
   description = "The annotations to add to the service account"
@@ -154,3 +162,6 @@ variable "docker_fs_group" {
   description = "The fsGroup to use for docker. This is added to security context when mount_docker_socket is enabled"
   default     = 412
 }
+
+
+

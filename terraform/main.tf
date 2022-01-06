@@ -168,23 +168,15 @@ module "private_gke_service_account" {
 #"github.com/DeimosCloud/terraform-kubernetes-gitlab-runner"
 #----------------------------------------------------------------------------------------------------------------------
 module "private_gitlab_runner" {
-  source                    = "DeimosCloud/gitlab-runner/kubernetes"
-  version                   = "~>1.0.1"
-
+  source                    = "../modules/gitlab-runner-master"
   release_name              = "${var.project_name}-runner"
   runner_tags               = var.private_runner_tags
   runner_registration_token = data.google_secret_manager_secret_version.private_gke_runner_registration_token.secret_data
   default_container_image   = var.default_runner_image
   depends_on                = [module.private_gke_cluster]
   mount_docker_socket       = true
-  node_tolerations          = var.gitlab_tolerations
-  node_selectors = {
-    "node-kind" = "gitlab-runner"
-  }
-
-
-  service_account_clusterwide_access = true
-  use_local_cache                    = true
+  tolerations               = var.gitlab_tolerations
+  node_selectors            = var.node_selectors       
 }
 
 #-------------------------------------------

@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: depoyment
+kind: Deployment
 metadata:
   name: simple-web-app
   namespace: default
@@ -7,15 +7,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      bb: web
+      app: web
   template:
     metadata:
       labels:
-        bb: web
+        app: web
     spec:
       containers:
-      - name: simple-web-app
-        image: gcr.io/deimos-internal-playground/simple-web-app@sha256:ec0d6968d7d251943f21857ef87125debe5078ec954c425ef5d6c4c6d60908f3
+      - name: nginx
+        image: nginx:1.14.2
 ---
 apiVersion: v1
 kind: Service
@@ -25,7 +25,7 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    bb: web
+    app: web
   ports:
   - port: 8080
     targetPort: 8080

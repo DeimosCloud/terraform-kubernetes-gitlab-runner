@@ -56,6 +56,10 @@ module "private_gke_cluster" {
           cidr_block   = "10.8.0.0/16"
           display_name = "private_vpc_cidr_block"
         },
+        {
+          cidr_block   = "35.211.184.251/32"
+          display_name = "openvpn" 
+        },
       ]
     },
   ]
@@ -71,9 +75,10 @@ module "private_gke_node_pool" {
   name               = "${local.project}-gke-nodepool"
   cluster            = module.private_gke_cluster.name
   location           = var.region
+  zones              = ["${var.region}-c"]
   initial_node_count = "1"
   min_node_count     = "1"
-  max_node_count     = "6"
+  max_node_count     = "2"
 
   image_type   = "COS"
   machine_type = var.machine_type
@@ -81,13 +86,10 @@ module "private_gke_node_pool" {
   disk_size_gb = var.gke_node_pool_disk_size
   oauth_scopes = var.gke_node_pool_oauth_scopes
   tags         = var.gke_node_pool_tags
-  labels = {
-    all-pools     = "true"
-    gitlab-runner = "false"
-  }
 
   depends_on = [module.private_gke_cluster]
 }
+
 
 module "private_gke_node_pool_gitlab" {
   source     = "../modules/gke-node-pool"
@@ -95,7 +97,6 @@ module "private_gke_node_pool_gitlab" {
   name       = "${local.project}-gke-nodepool-gitlab"
   cluster    = module.private_gke_cluster.name
   location   = var.region
-  zones      = ["${var.region}-c"]
 
   initial_node_count = "1"
   min_node_count     = "1"
@@ -105,17 +106,21 @@ module "private_gke_node_pool_gitlab" {
   image_type      = var.gke_node_pool_image_type
   disk_type       = var.gke_node_pool_disk_type
   disk_size_gb    = var.gke_node_pool_disk_size
-  #service_account = module.private_gke_service_account.email
+  service_account = module.private_gke_service_account.email
   oauth_scopes    = var.gke_node_pool_oauth_scopes
   tags            = var.gke_node_pool_tags
-  taints          = var.gke_node_pool_taints
-
-
+  taints = [{
+    key    = "gitlab-runner"
+    value  = "true"
+    effect = "NO_SCHEDULE"
+  }]
 
   labels = merge(local.common_labels, {
     all-pools     = "true"
     gitlab-runner = "true"
+    "node-kind"   = "gitlab-runner"
   })
+
 }
 
 #--------------------------------------
@@ -167,17 +172,56 @@ module "private_gke_service_account" {
 #data.google_secret_manager_secret_version.private_gke_runner_registration_token.secret_data
 #"github.com/DeimosCloud/terraform-kubernetes-gitlab-runner"
 #----------------------------------------------------------------------------------------------------------------------
-module "private_gitlab_runner" {
+module "gitlab_runner" {
   source                    = "../modules/gitlab-runner-master"
-  release_name              = "${var.project_name}-runner"
+  release_name              = "gitlab-runner"
   runner_tags               = var.private_runner_tags
   runner_registration_token = data.google_secret_manager_secret_version.private_gke_runner_registration_token.secret_data
+  image_pull_secret         = "dev-gcr-key"
+  
   default_container_image   = var.default_runner_image
-  depends_on                = [module.private_gke_cluster]
-  mount_docker_socket       = true
-  tolerations               = var.gitlab_tolerations
-  node_selectors            = var.node_selectors       
+  node_selectors = {
+    "node-kind" = "gitlab-runner"
+  }
+
+  tolerations = {
+    "k8s.gitlab.ci/dedicated=true" = "NoSchedule"
+  }
+
+  service_account_clusterwide_access = true
+  use_local_cache                    = true
+  mount_docker_socket                = true
+
+  depends_on  = [module.private_gke_cluster]
 }
+
+#----------------------------------------------------------------------------------------------------------------------
+# GITLAB RUNNER START
+#----------------------------------------------------------------------------------------------------------------------
+module "private_gitlab_runner" {
+  source                    = "DeimosCloud/gitlab-runner/kubernetes"
+  version                   = "~>1.0.5"
+  release_name              = "${var.project_name}-runner-${var.environment}"
+  runner_tags               = var.runner_tags
+  runner_registration_token = data.google_secret_manager_secret_version.runner_registration_token.secret_data
+  image_pull_secrets        = ["${var.project_name}-${var.environment}-pull-secret"]
+
+  default_container_image = "eu.gcr.io/dcp-enterprise-optty/optty-builder-image"
+  node_selectors = {
+    "node-kind" = "ci"
+  }
+
+  node_tolerations = {
+    "k8s.gitlab.ci/dedicated=true" = "NoSchedule"
+  }
+
+  service_account_clusterwide_access = true
+  use_local_cache                    = true
+  mount_docker_socket                = true
+
+  depends_on = [module.gke_cluster]
+}
+
 
 #-------------------------------------------
 # Service Account with read Access to GCR
@@ -189,7 +233,7 @@ module "gcr_reader_service_account" {
   display_name  = "Terraform Managed GCR Reader Service Account"
   generate_keys = true
   project_id    = var.project_id
-  prefix        = "${var.project_name}-sa"
+  prefix        = "team-test-sa"
   names         = ["gcr-reader"]
   project_roles = [
     "${var.project_id}=>roles/storage.objectViewer",

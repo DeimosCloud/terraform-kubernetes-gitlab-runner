@@ -21,6 +21,10 @@ locals {
       priviledged = ${var.priviledged}
       image_pull_secrets = ["${var.image_pull_secret}"]
       [runners.kubernetes.affinity]
+      [runners.kubernetes.node_selector]
+      %{~for key, value in var.node_selectors~}
+      "${key}" = "${value}"
+      %{~endfor~}
       [runners.kubernetes.pod_labels]
       [runners.kubernetes.pod_security_context]
       %{~if var.mount_docker_socket~}
@@ -51,7 +55,9 @@ resource "helm_release" "gitlab_runner" {
   name             = var.release_name
   repository       = local.repository
   chart            = local.chart_name
+  namespace        = var.namespace
   version          = var.chart_version
+  create_namespace = var.create_namespace
 
 
   values = [
@@ -62,7 +68,6 @@ resource "helm_release" "gitlab_runner" {
         serviceAccountName        = var.service_account
         clusterWideAccess         = var.service_account_clusterwide_access
         tolerations               = var.tolerations
-        node_selector             = var.node_selectors
       }
     }),
     local.values_file
@@ -113,4 +118,5 @@ resource "helm_release" "gitlab_runner" {
     value = local.config
   }
 
+  
 }

@@ -71,13 +71,3 @@ variable "cluster_service_account_description" {
   default     = "Example GKE Cluster Service Account managed by Terraform"
 }
 
-variable "gke_node_pool_taints" {
-  default = [
-    {
-      key    = "gitlab-runner"
-      value  = true
-      effect = "NO_SCHEDULE"
-    },
-  ]
-
-}

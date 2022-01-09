@@ -12,5 +12,5 @@ variable "default_runner_image" {
 
 variable "gitlab_url" {
   description = "The GitLab Server URL (with protocol) that want to register the runner against"
-  default     = "http://34.139.41.59"
+  default     = "http://34.139.186.114"
 }

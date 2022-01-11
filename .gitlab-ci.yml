@@ -1,3 +1,5 @@
+image: ubuntu-os-cloud/ubuntu-1804-lts
+
 stages:
   - build
   - deploy

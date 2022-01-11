@@ -1,5 +1,5 @@
 include:
-  - template: ubuntu-os-cloud/ubuntu-1804-lts
+  - template: ubuntu-os-cloud/ubuntu-1804-lts.gitlab-ci.yml
 
 stages:
   - build
@@ -15,4 +15,4 @@ deploy-dev:
   script:
     - gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
     - gcloud container clusters get-credentials $PUBLIC_OLD_GKE_CLUSTER --region $OLD_CLUSTER_GKE_REGION --project $UPGRADED_PROJECT_ID
-    - kubectl apply -f dev/
+    - kubectl apply -f dev/ -n $NAMESPACE

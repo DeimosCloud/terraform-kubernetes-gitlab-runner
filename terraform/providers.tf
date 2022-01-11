@@ -4,7 +4,8 @@ terraform {
   required_providers {
     google      = "~>3.40"
     google-beta = "~>3.40"
-    kubernetes  = "~> 1.13"
+    kubernetes  = "~>2.0"
+    helm        = "~>2.0"
   }
 }
 
@@ -25,8 +26,18 @@ provider "google-beta" {
 provider "kubernetes" {
   load_config_file = false
   alias            = "private"
-  #host                   = module.private_gke_cluster.endpoint
-  #host                   = var.private_gke_cluster_endpoint
-  #token                  = data.google_client_config.provider.access_token
-  #cluster_ca_certificate = module.private_gke_cluster.cluster_ca_certificate
+  host                   = module.private_gke_cluster.endpoint
+  token                  = data.google_client_config.provider.access_token
+  cluster_ca_certificate = module.private_gke_cluster.cluster_ca_certificate
+}
+
+provider "helm" {
+  kubernetes {
+  host                   = module.private_gke_cluster.endpoint
+  token                  = data.google_client_config.provider.access_token
+  cluster_ca_certificate = module.private_gke_cluster.cluster_ca_certificate
+  }
+  experiments {
+    manifest             = true
+  }
 }

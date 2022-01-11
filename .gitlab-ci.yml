@@ -1,6 +1,5 @@
 include:
-  - template: Terraform/Base.latest.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
-
+  - template: Terraform/Base.latest.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
 
 stages:
   - build
@@ -16,4 +15,4 @@ deploy-dev:
   script:
     - gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
     - gcloud container clusters get-credentials $PUBLIC_OLD_GKE_CLUSTER --region $OLD_CLUSTER_GKE_REGION --project $UPGRADED_PROJECT_ID
-    - kubectl apply -f k8s/dev/ -n $DEV_NAMESPACE
+    - kubectl apply -f dev/

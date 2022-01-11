@@ -13,3 +13,5 @@ data "google_secret_manager_secret_version" "registry_username" {
 data "google_secret_manager_secret_version" "registry_password" {
   secret = "DEV_AUTH_REGISTERY_PASSWORD"
 }
+
+data "google_client_config" "provider" {}

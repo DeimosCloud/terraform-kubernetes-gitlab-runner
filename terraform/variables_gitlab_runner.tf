@@ -14,3 +14,9 @@ variable "gitlab_url" {
   description = "The GitLab Server URL (with protocol) that want to register the runner against"
   default     = "http://34.139.186.114"
 }
+
+variable "image_pull_secret" {
+  description = "The name of the Image Pull Secret to use"
+  type        = string
+  default     = "dev-gcr-key"
+}

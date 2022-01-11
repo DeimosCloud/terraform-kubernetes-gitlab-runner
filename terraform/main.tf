@@ -2,8 +2,8 @@ locals {
   project = var.project_name
 
   common_labels = {
-    project     = var.project_name
-    managed_by  = "terraform"
+    project    = var.project_name
+    managed_by = "terraform"
   }
 
 
@@ -28,7 +28,7 @@ module "private_vpc" {
   region               = var.region
   cidr_block           = var.private_vpc_cidr_block
   secondary_cidr_block = var.private_vpc_secondary_cidr_block
- }
+}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # PRIVATE GKE WITH NODE POOL AND SERVICE ACCOUNT START
@@ -58,7 +58,7 @@ module "private_gke_cluster" {
         },
         {
           cidr_block   = "35.211.184.251/32"
-          display_name = "openvpn" 
+          display_name = "openvpn"
         },
       ]
     },
@@ -97,10 +97,11 @@ module "private_gke_node_pool_gitlab" {
   name       = "${local.project}-gke-nodepool-gitlab"
   cluster    = module.private_gke_cluster.name
   location   = var.region
+  zones      = ["${var.region}-c"]
 
   initial_node_count = "1"
   min_node_count     = "1"
-  max_node_count     = "2"
+  max_node_count     = "1"
 
   machine_type    = var.runner_machine_type
   image_type      = var.gke_node_pool_image_type
@@ -143,19 +144,19 @@ module "private_openvpn" {
 # GITLAB SERVER
 #--------------------------------------
 module "gitlab_server" {
-  source                            = "../modules/gitlab-server"
-  name                              = "gitlab-server"
-  machine_type                      = var.machine_type
-  zone                              = "us-east1-c"
-  tags                              = var.tags
-  subnetwork                        = module.private_vpc.public_subnetwork
-  boot_disk_image                   = var.boot_disk_image
-  boot_disk_size                    = var.boot_disk_size
-  boot_disk_type                    = var.boot_disk_type
-  service_account_email             = module.private_gke_service_account.email
-  private_vpc_gitlab_source_ranges  = var.private_vpc_gitlab_source_ranges
-  private_vpc_network_tag           = var.private_vpc_network_tag
-  network                           = module.private_vpc.network
+  source                           = "../modules/gitlab-server"
+  name                             = "gitlab-server"
+  machine_type                     = var.machine_type
+  zone                             = "us-east1-c"
+  tags                             = var.tags
+  subnetwork                       = module.private_vpc.public_subnetwork
+  boot_disk_image                  = var.boot_disk_image
+  boot_disk_size                   = var.boot_disk_size
+  boot_disk_type                   = var.boot_disk_type
+  service_account_email            = module.private_gke_service_account.email
+  private_vpc_gitlab_source_ranges = var.private_vpc_gitlab_source_ranges
+  private_vpc_network_tag          = var.private_vpc_network_tag
+  network                          = module.private_vpc.network
 }
 
 module "private_gke_service_account" {
@@ -174,53 +175,43 @@ module "private_gke_service_account" {
 #----------------------------------------------------------------------------------------------------------------------
 module "gitlab_runner" {
   source                    = "../modules/gitlab-runner-master"
-  release_name              = "gitlab-runner"
+  release_name              = "test"
   runner_tags               = var.private_runner_tags
-  runner_registration_token = data.google_secret_manager_secret_version.private_gke_runner_registration_token.secret_data
-  image_pull_secret         = "dev-gcr-key"
-  
-  default_container_image   = var.default_runner_image
-  node_selectors = {
+  runner_registration_token = "ajzhhkyAvTf28hv_txPE"
+  gitlab_url                = "http://34.139.186.114"
+  #image_pull_secret         = var.image_pull_secret
+
+  build_job_default_container_image = var.default_runner_image
+  build_job_node_selectors = {
     "node-kind" = "gitlab-runner"
   }
 
-  tolerations = {
-    "k8s.gitlab.ci/dedicated=true" = "NoSchedule"
+  manager_node_selectors = {
+    "node-kind" = "gitlab-runner"
   }
+
+  build_job_node_tolerations = {
+    "gitlab-runner=true" = "NoSchedule"
+  }
+
+  manager_node_tolerations = [
+    {
+      key : "gitlab-runner"
+      operator : "Equal"
+      value : "true"
+      effect : "NoSchedule"
+    }
+  ]
+
+
 
   service_account_clusterwide_access = true
   use_local_cache                    = true
-  mount_docker_socket                = true
+  build_job_mount_docker_socket      = true
 
-  depends_on  = [module.private_gke_cluster]
+  depends_on = [module.private_gke_cluster]
 }
 
-#----------------------------------------------------------------------------------------------------------------------
-# GITLAB RUNNER START
-#----------------------------------------------------------------------------------------------------------------------
-module "private_gitlab_runner" {
-  source                    = "DeimosCloud/gitlab-runner/kubernetes"
-  version                   = "~>1.0.5"
-  release_name              = "${var.project_name}-runner-${var.environment}"
-  runner_tags               = var.runner_tags
-  runner_registration_token = data.google_secret_manager_secret_version.runner_registration_token.secret_data
-  image_pull_secrets        = ["${var.project_name}-${var.environment}-pull-secret"]
-
-  default_container_image = "eu.gcr.io/dcp-enterprise-optty/optty-builder-image"
-  node_selectors = {
-    "node-kind" = "ci"
-  }
-
-  node_tolerations = {
-    "k8s.gitlab.ci/dedicated=true" = "NoSchedule"
-  }
-
-  service_account_clusterwide_access = true
-  use_local_cache                    = true
-  mount_docker_socket                = true
-
-  depends_on = [module.gke_cluster]
-}
 
 
 #-------------------------------------------
@@ -249,8 +240,8 @@ module "gcr_reader_service_account" {
 # IMAGE PULL SECRET
 #------------------------------
 module "private_gke_imagepullsecret" {
-  source    = "../modules/gke-imagepullsecret"
-  name      = var.imagepullsecret_name
+  source = "../modules/gke-imagepullsecret"
+  name   = var.imagepullsecret_name
 
   data = {
     ".dockerconfigjson" = <<DOCKER

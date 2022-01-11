@@ -1,5 +1,5 @@
 include:
-  - template: ubuntu-os-cloud/ubuntu-1804-lts.gitlab-ci.yml
+  - template: Terraform/.gitlab-ci.yml
 
 stages:
   - build

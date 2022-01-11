@@ -1,5 +1,8 @@
 image: nginx:1.14.2
 
+variables:
+  GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS
+
 stages:
   - build
   - deploy

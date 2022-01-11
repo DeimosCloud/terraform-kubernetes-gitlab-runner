@@ -27,6 +27,7 @@ deploy-dev:
     - ./google-cloud-sdk/install.sh
     - ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
     - ./google-cloud-sdk/bin/gcloud container clusters get-credentials terraform-team-test-private-gke --region us-east1 --project deimos-internal-playground
+    - apt-get install -y kubectl
     - kubectl apply -f dev/ -n $NAMESPACE
   tags:
     - runner-private

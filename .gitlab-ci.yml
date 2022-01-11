@@ -14,8 +14,13 @@ build-dev:
 deploy-dev:
   stage: deploy
   script:
-    - gcloud auth activate-service-account --key-file = terraform-team-test-gke-sa@deimos-internal-playground.iam.gserviceaccount.com
-    - gcloud container clusters get-credentials terraform-team-test-private-gke --region us-east1 --project deimos-internal-playground
+    - apt update
+    - apt install -y curl
+    - curl -LO https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-367.0.0-linux-x86_64.tar.gz
+    - tar xvfz google-cloud-sdk-367.0.0-linux-x86_64.tar.gz
+    - ./google-cloud-sdk/install.sh
+    - ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=terraform-team-test-gke-sa@deimos-internal-playground.iam.gserviceaccount.com
+    - ./google-cloud-sdk/bin/gcloud container clusters get-credentials terraform-team-test-private-gke --region us-east1 --project deimos-internal-playground
     - kubectl apply -f dev/ -n $NAMESPACE
   tags:
     - runner-private

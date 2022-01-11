@@ -101,7 +101,7 @@ module "private_gke_node_pool_gitlab" {
 
   initial_node_count = "1"
   min_node_count     = "1"
-  max_node_count     = "1"
+  max_node_count     = "2"
 
   machine_type    = var.runner_machine_type
   image_type      = var.gke_node_pool_image_type

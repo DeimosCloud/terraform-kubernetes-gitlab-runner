@@ -1,16 +1,19 @@
-include:
-  - template: Terraform/Base.latest.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/Base.latest.gitlab-ci.yml
-
 stages:
   - build
   - deploy
 
-build:
-  extends: .terraform:build
+build-dev:
+  stage: build
+  script:
+    - echo "Building the image and pushing to GCR..."
+  tags:
+    - runner-private
 
-deploy:
-  extends: .terraform:deploy
-  dependencies:
-    - build
-  environment:
-    name: default
+deploy-dev:
+  stage: deploy
+  script:
+    - gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+    - gcloud container clusters get-credentials terraform-team-test-private-gke --region us-east1 --project deimos-internal-playground
+    - kubectl apply -f dev/ -n $NAMESPACE
+  tags:
+    - runner-private

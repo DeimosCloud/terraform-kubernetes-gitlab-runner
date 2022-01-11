@@ -1,7 +1,10 @@
 image: nginx:1.14.2
 
 variables:
-  GOOGLE_APPLICATION_CREDENTIALS: $GOOGLE_APPLICATION_CREDENTIALS
+  GOOGLE_APPLICATION_CREDENTIALS: $DEV_AUTH_REGISTERY_SERVER
+  GKE_CLUSTER: terraform-team-test-private-gke
+  GKE_REGION: us-east1
+  PROJECT_ID: deimos-internal-playground
 
 stages:
   - build

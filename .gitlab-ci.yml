@@ -15,7 +15,7 @@ deploy-dev:
   stage: deploy
   script:
     - apt update
-    - apt install -y curl
+    - apt install -y curl python python3
     - curl -LO https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-367.0.0-linux-x86_64.tar.gz
     - tar xvfz google-cloud-sdk-367.0.0-linux-x86_64.tar.gz
     - ./google-cloud-sdk/install.sh

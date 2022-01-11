@@ -1,4 +1,4 @@
-image: ubuntu-os-cloud/ubuntu-1804-lts
+image: nginx:1.14.2
 
 stages:
   - build

@@ -5,7 +5,7 @@ stages:
 build-dev:
   stage: build
   script:
-    - echo "Building the image and pushing to GCR..."
+    - echo "Building the image and pushing to GCR.."
   tags:
     - runner-private
 

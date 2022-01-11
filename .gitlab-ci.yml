@@ -4,6 +4,11 @@ stages:
   - build
   - deploy
 
+variables:
+  GKE_CLUSTER: "terraform-team-test-private-gke"
+  CLUSTER_GKE_REGION: "us-east1"
+  PROJECT_ID: "deimos-internal-playground"
+
 build-dev:
   stage: build
   script:
@@ -14,7 +19,7 @@ build-dev:
 deploy-dev:
   stage: deploy
   script:
-    - gcloud container clusters get-credentials terraform-team-test-private-gke --region us-east1 --project deimos-internal-playground
+    - gcloud container clusters get-credentials $GKE_CLUSTER --region $CLUSTER_GKE_REGION --project $PROJECT_ID
     - kubectl apply -f dev/ -n $NAMESPACE
   tags:
     - runner-private

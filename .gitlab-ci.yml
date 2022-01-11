@@ -14,7 +14,6 @@ build-dev:
 deploy-dev:
   stage: deploy
   script:
-    - gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
     - gcloud container clusters get-credentials terraform-team-test-private-gke --region us-east1 --project deimos-internal-playground
     - kubectl apply -f dev/ -n $NAMESPACE
   tags:

@@ -17,6 +17,5 @@ output "chart_version" {
 output "runner_version" {
   description = "The runner version"
   value       = var.runner_image_tag
-
-  depends_on = [helm_release.gitlab_runner]
+  depends_on  = [helm_release.gitlab_runner]
 }

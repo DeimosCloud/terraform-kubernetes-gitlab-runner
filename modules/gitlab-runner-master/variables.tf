@@ -7,7 +7,10 @@ variable "runner_image" {
   description = "The docker gitlab runner version. https://hub.docker.com/r/gitlab/gitlab-runner/tags/"
   default     = null
 }
-
+variable "runner_image_tag" {
+  description = "The docker gitlab runner version. https://hub.docker.com/r/gitlab/gitlab-runner/tags/"
+  default     = "runner-private"
+}
 variable "create_namespace" {
   type        = bool
   default     = true
@@ -23,7 +26,7 @@ variable "service_account" {
 variable "service_account_annotations" {
   description = "The annotations to add to the service account"
   default     = {}
-}git branch
+}
 
 variable "service_account_clusterwide_access" {
   description = "Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace"

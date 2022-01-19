@@ -6,6 +6,7 @@ variable "namespace" {
 variable "runner_image" {
   description = "The docker gitlab runner version. https://hub.docker.com/r/gitlab/gitlab-runner/tags/"
   default     = null
+  type        = string
 }
 
 variable "create_namespace" {
@@ -70,6 +71,7 @@ variable "build_job_default_container_image" {
 variable "values_file" {
   description = "Path to Values file to be passed to gitlab-runner helm chart"
   default     = null
+  type        = string
 }
 
 variable "values" {
@@ -155,11 +157,13 @@ variable "build_job_pod_annotations" {
 variable "cache_type" {
   description = "One of: s3, gcs, azure. Only used when var.use_local_cache is false"
   default     = null
+  type        = string
 }
 
 variable "cache_path" {
   description = "Name of the path to prepend to the cache URL. Only used when var.use_local_cache is false"
   default     = null
+  type        = string
 }
 
 variable "cache_shared" {

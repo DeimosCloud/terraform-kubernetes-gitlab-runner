@@ -93,9 +93,9 @@ No modules.
 | <a name="input_build_job_priviledged"></a> [build\_job\_priviledged](#input\_build\_job\_priviledged) | Run all containers with the privileged flag enabled. This will allow the docker:dind image to run if you need to run Docker | `bool` | `false` | no |
 | <a name="input_build_job_run_container_as_user"></a> [build\_job\_run\_container\_as\_user](#input\_build\_job\_run\_container\_as\_user) | SecurityContext: runAsUser for all running job pods | `string` | `null` | no |
 | <a name="input_build_job_secret_volumes"></a> [build\_job\_secret\_volumes](#input\_build\_job\_secret\_volumes) | Secret volume configuration instructs Kubernetes to use a secret that is defined in Kubernetes cluster and mount it inside of the containes as defined https://docs.gitlab.com/runner/executors/kubernetes.html#secret-volumes | <pre>object({<br>    name       = string<br>    mount_path = string<br>    read_only  = string<br>    items      = map(string)<br>  })</pre> | <pre>{<br>  "items": {},<br>  "mount_path": null,<br>  "name": null,<br>  "read_only": null<br>}</pre> | no |
-| <a name="input_cache_path"></a> [cache\_path](#input\_cache\_path) | Name of the path to prepend to the cache URL. Only used when var.use\_local\_cache is false | `any` | `null` | no |
+| <a name="input_cache_path"></a> [cache\_path](#input\_cache\_path) | Name of the path to prepend to the cache URL. Only used when var.use\_local\_cache is false | `string` | `null` | no |
 | <a name="input_cache_shared"></a> [cache\_shared](#input\_cache\_shared) | Enables cache sharing between runners. Only used when var.use\_local\_cache is false | `bool` | `false` | no |
-| <a name="input_cache_type"></a> [cache\_type](#input\_cache\_type) | One of: s3, gcs, azure. Only used when var.use\_local\_cache is false | `any` | `null` | no |
+| <a name="input_cache_type"></a> [cache\_type](#input\_cache\_type) | One of: s3, gcs, azure. Only used when var.use\_local\_cache is false | `string` | `null` | no |
 | <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | The version of the chart | `string` | `"0.36.0"` | no |
 | <a name="input_concurrent"></a> [concurrent](#input\_concurrent) | Configure the maximum number of concurrent jobs | `number` | `10` | no |
 | <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | (Optional) Create the namespace if it does not yet exist. Defaults to false. | `bool` | `true` | no |
@@ -112,7 +112,7 @@ No modules.
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | n/a | `string` | `"gitlab-runner"` | no |
 | <a name="input_release_name"></a> [release\_name](#input\_release\_name) | The helm release name | `string` | `"gitlab-runner"` | no |
 | <a name="input_run_untagged_jobs"></a> [run\_untagged\_jobs](#input\_run\_untagged\_jobs) | Specify if jobs without tags should be run. https://docs.gitlab.com/ce/ci/runners/#runner-is-allowed-to-run-untagged-jobs | `bool` | `false` | no |
-| <a name="input_runner_image"></a> [runner\_image](#input\_runner\_image) | The docker gitlab runner version. https://hub.docker.com/r/gitlab/gitlab-runner/tags/ | `any` | `null` | no |
+| <a name="input_runner_image"></a> [runner\_image](#input\_runner\_image) | The docker gitlab runner version. https://hub.docker.com/r/gitlab/gitlab-runner/tags/ | `string` | `null` | no |
 | <a name="input_runner_locked"></a> [runner\_locked](#input\_runner\_locked) | Specify whether the runner should be locked to a specific project/group | `string` | `true` | no |
 | <a name="input_runner_registration_token"></a> [runner\_registration\_token](#input\_runner\_registration\_token) | runner registration token | `string` | n/a | yes |
 | <a name="input_runner_tags"></a> [runner\_tags](#input\_runner\_tags) | Specify the tags associated with the runner. Comma-separated list of tags. | `string` | n/a | yes |
@@ -122,7 +122,7 @@ No modules.
 | <a name="input_service_account_clusterwide_access"></a> [service\_account\_clusterwide\_access](#input\_service\_account\_clusterwide\_access) | Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace | `bool` | `false` | no |
 | <a name="input_use_local_cache"></a> [use\_local\_cache](#input\_use\_local\_cache) | Use path on nodes for caching | `bool` | `false` | no |
 | <a name="input_values"></a> [values](#input\_values) | Additional values to be passed to the gitlab-runner helm chart | `map` | `{}` | no |
-| <a name="input_values_file"></a> [values\_file](#input\_values\_file) | Path to Values file to be passed to gitlab-runner helm chart | `any` | `null` | no |
+| <a name="input_values_file"></a> [values\_file](#input\_values\_file) | Path to Values file to be passed to gitlab-runner helm chart | `string` | `null` | no |
 
 ## Outputs
 

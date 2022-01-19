@@ -8,7 +8,6 @@ output "release_name" {
   value       = helm_release.gitlab_runner.name
 }
 
-
 output "chart_version" {
   description = "The chart version"
   value       = helm_release.gitlab_runner.version

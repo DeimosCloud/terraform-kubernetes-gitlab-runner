@@ -12,3 +12,16 @@ eks-admin-service-account.yaml
 config-map-aws-auth*.yaml
 kubeconfig_*
 *.swp
+
+# Local .terraform directories
+**/.terraform/*
+
+# Terraform lockfile
+.terraform.lock.hcl
+
+#  Crash log files
+crash.log
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc

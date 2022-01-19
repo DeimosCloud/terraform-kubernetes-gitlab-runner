@@ -68,8 +68,13 @@ variable "build_job_default_container_image" {
 }
 
 variable "values_file" {
-  description = "Path to Values file to be passed to gitlab-runner helm templates"
+  description = "Path to Values file to be passed to gitlab-runner helm chart"
   default     = null
+}
+
+variable "values" {
+  description = "Additional values to be passed to the gitlab-runner helm chart"
+  default     = {}
 }
 
 variable "gitlab_url" {
@@ -219,3 +224,4 @@ variable "manager_pod_annotations" {
   description = "A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. "
   default     = {}
 }
+

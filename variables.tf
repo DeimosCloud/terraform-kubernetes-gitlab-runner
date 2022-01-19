@@ -3,9 +3,9 @@ variable "namespace" {
   default = "gitlab-runner"
 }
 
-variable "runner_image_tag" {
+variable "runner_image" {
   description = "The docker gitlab runner version. https://hub.docker.com/r/gitlab/gitlab-runner/tags/"
-  default     = "alpine-v13.11.0-rc1"
+  default     = null
 }
 
 variable "create_namespace" {
@@ -23,7 +23,7 @@ variable "service_account" {
 variable "service_account_annotations" {
   description = "The annotations to add to the service account"
   default     = {}
-}
+}git branch
 
 variable "service_account_clusterwide_access" {
   description = "Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace"
@@ -32,7 +32,7 @@ variable "service_account_clusterwide_access" {
 
 variable "chart_version" {
   description = "The version of the chart"
-  default     = "0.28.0-rc1"
+  default     = "0.36.0"
 }
 
 variable "runner_registration_token" {
@@ -61,7 +61,7 @@ variable "release_name" {
   default     = "gitlab-runner"
 }
 
-variable "default_container_image" {
+variable "build_job_default_container_image" {
   description = "Default container image to use for builds when none is specified"
   type        = string
   default     = "ubuntu:18.04"
@@ -97,7 +97,7 @@ variable "local_cache_dir" {
   description = "Path on nodes for caching"
 }
 
-variable "mount_docker_socket" {
+variable "build_job_mount_docker_socket" {
   default     = false
   description = "Path on nodes for caching"
   type        = bool
@@ -109,13 +109,13 @@ variable "build_dir" {
   description = "Path on nodes for caching"
 }
 
-variable "run_container_as_user" {
+variable "build_job_run_container_as_user" {
   default     = null
   type        = string
   description = "SecurityContext: runAsUser for all running job pods"
 }
 
-variable "priviledged" {
+variable "build_job_priviledged" {
   default     = false
   type        = bool
   description = "Run all containers with the privileged flag enabled. This will allow the docker:dind image to run if you need to run Docker"
@@ -126,22 +126,22 @@ variable "docker_fs_group" {
   default     = 412
 }
 
-variable "node_selectors" {
+variable "build_job_node_selectors" {
   description = "A map of node selectors to apply to the pods"
   default     = {}
 }
 
-variable "node_tolerations" {
+variable "build_job_node_tolerations" {
   description = "A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings"
   default     = {}
 }
 
-variable "pod_labels" {
+variable "build_job_pod_labels" {
   description = "A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. "
   default     = {}
 }
 
-variable "pod_annotations" {
+variable "build_job_pod_annotations" {
   description = "A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. "
   default     = {}
 }
@@ -177,7 +177,7 @@ variable "s3_cache_conf" {
   default     = {}
 }
 
-variable "secret_volumes" {
+variable "build_job_secret_volumes" {
   description = "Secret volume configuration instructs Kubernetes to use a secret that is defined in Kubernetes cluster and mount it inside of the containes as defined https://docs.gitlab.com/runner/executors/kubernetes.html#secret-volumes"
   type = object({
     name       = string
@@ -198,4 +198,24 @@ variable "image_pull_secrets" {
   description = "A array of secrets that are used to authenticate Docker image pulling."
   type        = list(string)
   default     = []
+}
+
+variable "manager_node_selectors" {
+  description = "A map of node selectors to apply to the pods"
+  default     = {}
+}
+
+variable "manager_node_tolerations" {
+  description = "A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings"
+  default     = {}
+}
+
+variable "manager_pod_labels" {
+  description = "A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. "
+  default     = {}
+}
+
+variable "manager_pod_annotations" {
+  description = "A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. "
+  default     = {}
 }

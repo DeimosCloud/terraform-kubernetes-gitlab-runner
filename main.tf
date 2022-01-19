@@ -16,58 +16,29 @@ resource "helm_release" "gitlab_runner" {
 
   values = [
     yamlencode({
+      image                   = var.runner_image
+      gitlabUrl               = var.gitlab_url
+      concurrent              = var.concurrent
+      runnerRegistrationToken = var.runner_registration_token
+
+      runners = {
+        runUntagged = var.run_untagged_jobs
+        tags        = var.runner_tags
+        locked      = var.runner_locked
+        config      = local.config
+      }
       rbac = {
         create                    = var.create_service_account
         serviceAccountAnnotations = var.service_account_annotations
         serviceAccountName        = var.service_account
         clusterWideAccess         = var.service_account_clusterwide_access
       }
+      nodeSelector   = var.manager_node_selectors
+      tolerations    = var.manager_node_tolerations
+      podLabels      = var.manager_pod_labels
+      podAnnotations = var.manager_pod_annotations
     }),
     local.values_file
   ]
 
-  set {
-    type  = "string"
-    name  = "gitlabUrl"
-    value = var.gitlab_url
-  }
-
-  set {
-    name  = "image"
-    value = "gitlab/gitlab-runner:${var.runner_image_tag}"
-  }
-
-  set {
-    name  = "concurrent"
-    value = var.concurrent
-  }
-
-
-  set {
-    name  = "runnerRegistrationToken"
-    value = var.runner_registration_token
-  }
-
-  set {
-    name  = "runners.runUntagged"
-    value = var.run_untagged_jobs
-  }
-
-  set {
-    type  = "string"
-    name  = "runners.tags"
-    value = var.runner_tags
-  }
-
-  set {
-    type  = "string"
-    name  = "runners.locked"
-    value = var.runner_locked
-  }
-
-  set {
-    type  = "string"
-    name  = "runners.config"
-    value = local.config
-  }
 }

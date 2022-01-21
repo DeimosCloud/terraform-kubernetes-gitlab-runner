@@ -5,6 +5,19 @@ email, or any other method with the owners of this repository before making a ch
 
 Please note we have a code of conduct, please follow it in all your interactions with the project.
 
+## Code Formatting, Checks and Doc generation
+
+The repository uses [pre-commit](https://pre-commit.com/) and [pre-commit-terraform hooks](https://github.com/antonbabenko/pre-commit-terraform) to autoformat code and generate documentation before committing changes. Hence, to start contributing, ensure you have 
+
+- [pre-commit](https://pre-commit.com/) installed.
+- [terraform-docs](https://github.com/segmentio/terraform-docs) installed.
+- [tflint](https://github.com/terraform-linters/tflint) installed.
+
+```bash
+$ pre-commit install # Initializes pre-commit
+$ git commit -m "<MESSAGE>" # calls pre-commit hooks before commiting changes
+```
+
 ## Pull Request Process
 
 1.  Ensure any install or build dependencies are removed before the end of the layer when doing a build.

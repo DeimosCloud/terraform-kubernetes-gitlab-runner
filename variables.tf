@@ -122,7 +122,7 @@ variable "build_job_run_container_as_user" {
   description = "SecurityContext: runAsUser for all running job pods"
 }
 
-variable "build_job_priviledged" {
+variable "build_job_privileged" {
   default     = false
   type        = bool
   description = "Run all containers with the privileged flag enabled. This will allow the docker:dind image to run if you need to run Docker"

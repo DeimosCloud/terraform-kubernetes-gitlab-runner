@@ -8,7 +8,7 @@ locals {
   [runners.cache]
     Type = "${var.cache_type}"
     Path = "${var.cache_path}"
-    Shared = "${var.cache_shared}"
+    Shared = ${var.cache_shared}
     [runners.cache.s3]
     %{~for key, value in var.s3_cache_conf~}
       ${key} = ${value}

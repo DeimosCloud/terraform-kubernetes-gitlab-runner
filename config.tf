@@ -11,15 +11,15 @@ locals {
     Shared = ${var.cache_shared}
     [runners.cache.s3]
     %{~for key, value in var.s3_cache_conf~}
-      ${key} = ${value}
+      "${key}" = "${value}"
     %{~endfor~}
     [runners.cache.gcs]
     %{~for key, value in var.gcs_cache_conf~}
-      ${key} = ${value}
+      "${key}" = "${value}"
     %{~endfor~}
     [runners.cache.azure]
     %{~for key, value in var.azure_cache_conf~}
-      ${key} = ${value}
+      "${key}" = "${value}"
     %{~endfor~}
     %{~endif~}
 %{~endif}

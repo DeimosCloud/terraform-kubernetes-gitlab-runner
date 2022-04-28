@@ -251,3 +251,9 @@ variable "cache_secret_name" {
   type        = string
   default     = null
 }
+
+variable "unregister_runners" {
+  description = "whether runners should be unregistered when pool is deprovisioned"
+  type        = bool
+  default     = string
+}

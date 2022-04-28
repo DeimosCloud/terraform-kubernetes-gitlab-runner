@@ -23,7 +23,7 @@ resource "helm_release" "gitlab_runner" {
       concurrent              = var.concurrent
       runnerRegistrationToken = var.runner_registration_token
       replicas                = var.replicas
-      unregisterRunners       = true
+      unregisterRunners       = var.unregister_runners
       secrets                 = var.additional_secrets
 
 

@@ -231,11 +231,8 @@ variable "manager_pod_annotations" {
 
 variable "additional_secrets" {
   description = "additional secrets to mount into the manager pods"
-  type = list(object({
-    name  = string
-    items = list(map(string))
-  }))
-  default = []
+  type        = list(map(string))
+  default     = []
 }
 
 variable "replicas" {
@@ -252,4 +249,5 @@ variable "runner_name" {
 variable "cache_secret_name" {
   description = "name of the kubernetes secret that holds the credential file for the cache"
   type        = string
+  default     = null
 }

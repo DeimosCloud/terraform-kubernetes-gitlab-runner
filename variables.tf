@@ -62,6 +62,12 @@ variable "release_name" {
   default     = "gitlab-runner"
 }
 
+variable "atomic" {
+  description = "whenteher to deploy the entire module as a unit"
+  type        = bool
+  default     = true
+}
+
 variable "build_job_default_container_image" {
   description = "Default container image to use for builds when none is specified"
   type        = string

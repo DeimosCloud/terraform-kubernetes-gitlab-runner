@@ -7,7 +7,7 @@ resource "helm_release" "gitlab_runner" {
   namespace        = var.namespace
   version          = var.chart_version
   create_namespace = var.create_namespace
-  atomic           = true
+  atomic           = var.atomic
 
 
   values = [

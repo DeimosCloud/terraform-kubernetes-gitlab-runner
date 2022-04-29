@@ -69,6 +69,7 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_additional_secrets"></a> [additional\_secrets](#input\_additional\_secrets) | additional secrets to mount into the manager pods | `list(map(string))` | `[]` | no |
+| <a name="input_atomic"></a> [atomic](#input\_atomic) | whenteher to deploy the entire module as a unit | `bool` | `true` | no |
 | <a name="input_build_dir"></a> [build\_dir](#input\_build\_dir) | Path on nodes for caching | `string` | `null` | no |
 | <a name="input_build_job_default_container_image"></a> [build\_job\_default\_container\_image](#input\_build\_job\_default\_container\_image) | Default container image to use for builds when none is specified | `string` | `"ubuntu:18.04"` | no |
 | <a name="input_build_job_mount_docker_socket"></a> [build\_job\_mount\_docker\_socket](#input\_build\_job\_mount\_docker\_socket) | Path on nodes for caching | `bool` | `false` | no |

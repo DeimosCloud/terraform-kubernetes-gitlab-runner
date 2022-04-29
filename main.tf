@@ -1,11 +1,3 @@
-locals {
-  values_file       = var.values_file != null ? file(var.values_file) : ""
-  repository        = "https://charts.gitlab.io"
-  chart_name        = "gitlab-runner"
-  runner_token      = var.runner_registration_token == null ? var.runner_token : null
-  cache_secret_name = var.cache_type == "s3" ? "s3access" : var.cache_type == "azure" ? "azureaccess" : var.cache_type == "gcs" && var.gcs_cache_use_cred_file == true ? "google-application-credentials" : var.cache_type == "gcs" && var.gcs_cache_use_cred_file != true ? "gcsaccess" : ""
-  replicas          = var.runner_token != null ? 1 : var.replicas
-}
 
 //INSTALL HELM CHART
 resource "helm_release" "gitlab_runner" {
@@ -39,7 +31,7 @@ resource "helm_release" "gitlab_runner" {
         config      = local.config
 
         cache = {
-          secretName = var.cache_secret_name
+          secretName = local.cache_secret_name
         }
       }
 

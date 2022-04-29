@@ -69,7 +69,6 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_additional_secrets"></a> [additional\_secrets](#input\_additional\_secrets) | additional secrets to mount into the manager pods | `list(map(string))` | `[]` | no |
-| <a name="input_azure_cache_conf"></a> [azure\_cache\_conf](#input\_azure\_cache\_conf) | Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscacheazure-section. Only used when var.use\_local\_cache is false | `map` | `{}` | no |
 | <a name="input_build_dir"></a> [build\_dir](#input\_build\_dir) | Path on nodes for caching | `string` | `null` | no |
 | <a name="input_build_job_default_container_image"></a> [build\_job\_default\_container\_image](#input\_build\_job\_default\_container\_image) | Default container image to use for builds when none is specified | `string` | `"ubuntu:18.04"` | no |
 | <a name="input_build_job_mount_docker_socket"></a> [build\_job\_mount\_docker\_socket](#input\_build\_job\_mount\_docker\_socket) | Path on nodes for caching | `bool` | `false` | no |
@@ -80,17 +79,12 @@ No modules.
 | <a name="input_build_job_privileged"></a> [build\_job\_privileged](#input\_build\_job\_privileged) | Run all containers with the privileged flag enabled. This will allow the docker:dind image to run if you need to run Docker | `bool` | `false` | no |
 | <a name="input_build_job_run_container_as_user"></a> [build\_job\_run\_container\_as\_user](#input\_build\_job\_run\_container\_as\_user) | SecurityContext: runAsUser for all running job pods | `string` | `null` | no |
 | <a name="input_build_job_secret_volumes"></a> [build\_job\_secret\_volumes](#input\_build\_job\_secret\_volumes) | Secret volume configuration instructs Kubernetes to use a secret that is defined in Kubernetes cluster and mount it inside of the containes as defined https://docs.gitlab.com/runner/executors/kubernetes.html#secret-volumes | <pre>object({<br>    name       = string<br>    mount_path = string<br>    read_only  = string<br>    items      = map(string)<br>  })</pre> | <pre>{<br>  "items": {},<br>  "mount_path": null,<br>  "name": null,<br>  "read_only": null<br>}</pre> | no |
-| <a name="input_cache_path"></a> [cache\_path](#input\_cache\_path) | Name of the path to prepend to the cache URL. Only used when var.use\_local\_cache is false | `string` | `null` | no |
-| <a name="input_cache_secret_name"></a> [cache\_secret\_name](#input\_cache\_secret\_name) | name of the kubernetes secret that holds the credential file for the cache | `string` | `null` | no |
-| <a name="input_cache_shared"></a> [cache\_shared](#input\_cache\_shared) | Enables cache sharing between runners. Only used when var.use\_local\_cache is false | `bool` | `false` | no |
-| <a name="input_cache_type"></a> [cache\_type](#input\_cache\_type) | One of: s3, gcs, azure. Only used when var.use\_local\_cache is false | `string` | `null` | no |
+| <a name="input_cache"></a> [cache](#input\_cache) | value | <pre>object({<br>    type   = string<br>    path   = string<br>    shared = bool<br>    gcs    = map(any)<br>    s3     = map(any)<br>    azure  = map(any)<br>  })</pre> | <pre>{<br>  "azure": {},<br>  "gcs": {<br>    "CredentialsFile": ""<br>  },<br>  "path": "",<br>  "s3": {},<br>  "shared": false,<br>  "type": ""<br>}</pre> | no |
 | <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | The version of the chart | `string` | `"0.36.0"` | no |
 | <a name="input_concurrent"></a> [concurrent](#input\_concurrent) | Configure the maximum number of concurrent jobs | `number` | `10` | no |
 | <a name="input_create_namespace"></a> [create\_namespace](#input\_create\_namespace) | (Optional) Create the namespace if it does not yet exist. Defaults to false. | `bool` | `true` | no |
 | <a name="input_create_service_account"></a> [create\_service\_account](#input\_create\_service\_account) | If true, the service account, it's role and rolebinding will be created, else, the service account is assumed to already be created | `bool` | `true` | no |
 | <a name="input_docker_fs_group"></a> [docker\_fs\_group](#input\_docker\_fs\_group) | The fsGroup to use for docker. This is added to security context when mount\_docker\_socket is enabled | `number` | `412` | no |
-| <a name="input_gcs_cache_conf"></a> [gcs\_cache\_conf](#input\_gcs\_cache\_conf) | Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscachegcs-section. Only used when var.use\_local\_cache is false | `map` | `{}` | no |
-| <a name="input_gcs_cache_use_cred_file"></a> [gcs\_cache\_use\_cred\_file](#input\_gcs\_cache\_use\_cred\_file) | whether to use credentials file to to authenticate to google or use a service account id and private key. setting this to true selects the cred file, setting it to false means that the id and private key is the chosen means of authentication. | `bool` | `null` | no |
 | <a name="input_gitlab_url"></a> [gitlab\_url](#input\_gitlab\_url) | The GitLab Server URL (with protocol) that want to register the runner against | `string` | `"https://gitlab.com/"` | no |
 | <a name="input_image_pull_secrets"></a> [image\_pull\_secrets](#input\_image\_pull\_secrets) | A array of secrets that are used to authenticate Docker image pulling. | `list(string)` | `[]` | no |
 | <a name="input_local_cache_dir"></a> [local\_cache\_dir](#input\_local\_cache\_dir) | Path on nodes for caching | `string` | `"/tmp/gitlab/cache"` | no |
@@ -108,12 +102,10 @@ No modules.
 | <a name="input_runner_registration_token"></a> [runner\_registration\_token](#input\_runner\_registration\_token) | runner registration token | `string` | n/a | yes |
 | <a name="input_runner_tags"></a> [runner\_tags](#input\_runner\_tags) | Specify the tags associated with the runner. Comma-separated list of tags. | `string` | n/a | yes |
 | <a name="input_runner_token"></a> [runner\_token](#input\_runner\_token) | token of already registered runer. to use this var.runner\_registration\_token must be set to null | `string` | `null` | no |
-| <a name="input_s3_cache_conf"></a> [s3\_cache\_conf](#input\_s3\_cache\_conf) | Cache parameters define using S3 for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section. Only used when var.use\_local\_cache is false | `map` | `{}` | no |
 | <a name="input_service_account"></a> [service\_account](#input\_service\_account) | The name of the Service account to create | `string` | `"gitlab-runner"` | no |
 | <a name="input_service_account_annotations"></a> [service\_account\_annotations](#input\_service\_account\_annotations) | The annotations to add to the service account | `map` | `{}` | no |
 | <a name="input_service_account_clusterwide_access"></a> [service\_account\_clusterwide\_access](#input\_service\_account\_clusterwide\_access) | Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace | `bool` | `false` | no |
 | <a name="input_unregister_runners"></a> [unregister\_runners](#input\_unregister\_runners) | whether runners should be unregistered when pool is deprovisioned | `bool` | `true` | no |
-| <a name="input_use_local_cache"></a> [use\_local\_cache](#input\_use\_local\_cache) | Use path on nodes for caching | `bool` | `false` | no |
 | <a name="input_values"></a> [values](#input\_values) | Additional values to be passed to the gitlab-runner helm chart | `map` | `{}` | no |
 | <a name="input_values_file"></a> [values\_file](#input\_values\_file) | Path to Values file to be passed to gitlab-runner helm chart | `string` | `null` | no |
 

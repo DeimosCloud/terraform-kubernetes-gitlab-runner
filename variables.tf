@@ -94,11 +94,6 @@ variable "create_service_account" {
   description = "If true, the service account, it's role and rolebinding will be created, else, the service account is assumed to already be created"
 }
 
-variable "use_local_cache" {
-  default     = false
-  description = "Use path on nodes for caching"
-}
-
 variable "local_cache_dir" {
   default     = "/tmp/gitlab/cache"
   description = "Path on nodes for caching"
@@ -153,38 +148,6 @@ variable "build_job_pod_annotations" {
   default     = {}
 }
 
-
-variable "cache_type" {
-  description = "One of: s3, gcs, azure. Only used when var.use_local_cache is false"
-  default     = null
-  type        = string
-}
-
-variable "cache_path" {
-  description = "Name of the path to prepend to the cache URL. Only used when var.use_local_cache is false"
-  default     = null
-  type        = string
-}
-
-variable "cache_shared" {
-  description = "Enables cache sharing between runners. Only used when var.use_local_cache is false"
-  default     = false
-}
-
-variable "azure_cache_conf" {
-  description = "Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscacheazure-section. Only used when var.use_local_cache is false"
-  default     = {}
-}
-
-variable "gcs_cache_conf" {
-  description = "Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscachegcs-section. Only used when var.use_local_cache is false"
-  default     = {}
-}
-
-variable "s3_cache_conf" {
-  description = "Cache parameters define using S3 for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section. Only used when var.use_local_cache is false"
-  default     = {}
-}
 
 variable "build_job_secret_volumes" {
   description = "Secret volume configuration instructs Kubernetes to use a secret that is defined in Kubernetes cluster and mount it inside of the containes as defined https://docs.gitlab.com/runner/executors/kubernetes.html#secret-volumes"
@@ -246,12 +209,6 @@ variable "runner_name" {
   type        = string
 }
 
-variable "cache_secret_name" {
-  description = "name of the kubernetes secret that holds the credential file for the cache"
-  type        = string
-  default     = null
-}
-
 variable "unregister_runners" {
   description = "whether runners should be unregistered when pool is deprovisioned"
   type        = bool
@@ -264,8 +221,31 @@ variable "runner_token" {
   default     = null
 }
 
-variable "gcs_cache_use_cred_file" {
-  description = "whether to use credentials file to to authenticate to google or use a service account id and private key. setting this to true selects the cred file, setting it to false means that the id and private key is the chosen means of authentication."
-  type        = bool
-  default     = null
+
+variable "cache" {
+  description = "value"
+  type = object({
+    type   = string
+    path   = string
+    shared = bool
+    gcs    = map(any)
+    s3     = map(any)
+    azure  = map(any)
+  })
+
+  validation {
+    condition     = var.cache.type == "gcs" ? lookup(var.cache.gcs, "CredentialsFile", "") != "" || lookup(var.cache.gcs, "AccessID", "") != "" : true
+    error_message = "To use the gcs cache type you must set either CredentialsFile or AccessID and PrivateKey in var.cache.gcs."
+  }
+
+  default = {
+    type   = ""
+    shared = false
+    path   = ""
+    gcs = {
+      CredentialsFile = ""
+    }
+    s3    = {}
+    azure = {}
+  }
 }

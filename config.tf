@@ -1,24 +1,24 @@
 locals {
   config = <<EOF
 [[runners]]
-%{if var.use_local_cache~}
+%{if var.cache.type == "local"~}
   cache_dir = "${var.local_cache_dir}"
 %{~else~}
-  %{if var.cache_type != null~}
+  %{if var.cache.type != "local"~}
   [runners.cache]
-    Type = "${var.cache_type}"
-    Path = "${var.cache_path}"
-    Shared = ${var.cache_shared}
+    Type = "${var.cache.type}"
+    Path = "${var.cache.path}"
+    Shared = ${var.cache.shared}
     [runners.cache.s3]
-    %{~for key, value in var.s3_cache_conf~}
+    %{~for key, value in var.cache.s3~}
       "${key}" = "${value}"
     %{~endfor~}
     [runners.cache.gcs]
-    %{~for key, value in var.gcs_cache_conf~}
+    %{~for key, value in var.cache.gcs~}
       "${key}" = "${value}"
     %{~endfor~}
     [runners.cache.azure]
-    %{~for key, value in var.azure_cache_conf~}
+    %{~for key, value in var.cache.azure~}
       "${key}" = "${value}"
     %{~endfor~}
     %{~endif~}
@@ -66,7 +66,7 @@ locals {
         read_only = true
         host_path = "/var/run/docker.sock"
     %{~endif~}
-    %{~if var.use_local_cache~}
+    %{~if var.cache.type == "local"~}
       [[runners.kubernetes.volumes.host_path]]
         name = "cache"
         mount_path = "${var.local_cache_dir}"

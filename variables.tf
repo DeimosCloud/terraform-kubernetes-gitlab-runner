@@ -255,5 +255,17 @@ variable "cache_secret_name" {
 variable "unregister_runners" {
   description = "whether runners should be unregistered when pool is deprovisioned"
   type        = bool
-  default     = string
+  default     = true
+}
+
+variable "runner_token" {
+  description = "token of already registered runer. to use this var.runner_registration_token must be set to null"
+  type        = string
+  default     = null
+}
+
+variable "gcs_cache_use_cred_file" {
+  description = "whether to use credentials file to to authenticate to google or use a service account id and private key. setting this to true selects the cred file, setting it to false means that the id and private key is the chosen means of authentication."
+  type        = bool
+  default     = null
 }

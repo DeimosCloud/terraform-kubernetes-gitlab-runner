@@ -90,6 +90,7 @@ No modules.
 | <a name="input_create_service_account"></a> [create\_service\_account](#input\_create\_service\_account) | If true, the service account, it's role and rolebinding will be created, else, the service account is assumed to already be created | `bool` | `true` | no |
 | <a name="input_docker_fs_group"></a> [docker\_fs\_group](#input\_docker\_fs\_group) | The fsGroup to use for docker. This is added to security context when mount\_docker\_socket is enabled | `number` | `412` | no |
 | <a name="input_gcs_cache_conf"></a> [gcs\_cache\_conf](#input\_gcs\_cache\_conf) | Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscachegcs-section. Only used when var.use\_local\_cache is false | `map` | `{}` | no |
+| <a name="input_gcs_cache_use_cred_file"></a> [gcs\_cache\_use\_cred\_file](#input\_gcs\_cache\_use\_cred\_file) | whether to use credentials file to to authenticate to google or use a service account id and private key. setting this to true selects the cred file, setting it to false means that the id and private key is the chosen means of authentication. | `bool` | `null` | no |
 | <a name="input_gitlab_url"></a> [gitlab\_url](#input\_gitlab\_url) | The GitLab Server URL (with protocol) that want to register the runner against | `string` | `"https://gitlab.com/"` | no |
 | <a name="input_image_pull_secrets"></a> [image\_pull\_secrets](#input\_image\_pull\_secrets) | A array of secrets that are used to authenticate Docker image pulling. | `list(string)` | `[]` | no |
 | <a name="input_local_cache_dir"></a> [local\_cache\_dir](#input\_local\_cache\_dir) | Path on nodes for caching | `string` | `"/tmp/gitlab/cache"` | no |
@@ -106,10 +107,12 @@ No modules.
 | <a name="input_runner_name"></a> [runner\_name](#input\_runner\_name) | name of the runner | `string` | n/a | yes |
 | <a name="input_runner_registration_token"></a> [runner\_registration\_token](#input\_runner\_registration\_token) | runner registration token | `string` | n/a | yes |
 | <a name="input_runner_tags"></a> [runner\_tags](#input\_runner\_tags) | Specify the tags associated with the runner. Comma-separated list of tags. | `string` | n/a | yes |
+| <a name="input_runner_token"></a> [runner\_token](#input\_runner\_token) | token of already registered runer. to use this var.runner\_registration\_token must be set to null | `string` | `null` | no |
 | <a name="input_s3_cache_conf"></a> [s3\_cache\_conf](#input\_s3\_cache\_conf) | Cache parameters define using S3 for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section. Only used when var.use\_local\_cache is false | `map` | `{}` | no |
 | <a name="input_service_account"></a> [service\_account](#input\_service\_account) | The name of the Service account to create | `string` | `"gitlab-runner"` | no |
 | <a name="input_service_account_annotations"></a> [service\_account\_annotations](#input\_service\_account\_annotations) | The annotations to add to the service account | `map` | `{}` | no |
 | <a name="input_service_account_clusterwide_access"></a> [service\_account\_clusterwide\_access](#input\_service\_account\_clusterwide\_access) | Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace | `bool` | `false` | no |
+| <a name="input_unregister_runners"></a> [unregister\_runners](#input\_unregister\_runners) | whether runners should be unregistered when pool is deprovisioned | `bool` | `true` | no |
 | <a name="input_use_local_cache"></a> [use\_local\_cache](#input\_use\_local\_cache) | Use path on nodes for caching | `bool` | `false` | no |
 | <a name="input_values"></a> [values](#input\_values) | Additional values to be passed to the gitlab-runner helm chart | `map` | `{}` | no |
 | <a name="input_values_file"></a> [values\_file](#input\_values\_file) | Path to Values file to be passed to gitlab-runner helm chart | `string` | `null` | no |

@@ -63,7 +63,7 @@ variable "release_name" {
 }
 
 variable "atomic" {
-  description = "whenteher to deploy the entire module as a unit"
+  description = "whether to deploy the entire module as a unit"
   type        = bool
   default     = true
 }
@@ -229,7 +229,7 @@ variable "runner_token" {
 
 
 variable "cache" {
-  description = "value"
+  description = "Describes the properties of the cache. type can be either of ['local', 'gcs', 's3', 'azure'], path defines a path to append to the bucket url, shared specifies whether the cache can be shared between runners. you also specify the individual properties of the particular cache type you select. see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section"
   type = object({
     type   = string
     path   = string
@@ -246,12 +246,10 @@ variable "cache" {
 
   default = {
     type   = ""
-    shared = false
     path   = ""
-    gcs = {
-      CredentialsFile = ""
-    }
-    s3    = {}
-    azure = {}
+    shared = false
+    gcs    = {}
+    s3     = {}
+    azure  = {}
   }
 }

@@ -241,11 +241,24 @@ variable "cache" {
 
   validation {
     condition     = var.cache.type == "gcs" ? lookup(var.cache.gcs, "CredentialsFile", "") != "" || lookup(var.cache.gcs, "AccessID", "") != "" : true
-    error_message = "To use the gcs cache type you must set either CredentialsFile or AccessID and PrivateKey in var.cache.gcs."
+    error_message = "To use the gcs cache type you must set either CredentialsFile or AccessID and PrivateKey in var.cache.gcs. see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section for config details."
+  }
+  validation {
+    condition     = var.cache.type == "azure" ? length(var.cache.azure) > 0 : true
+    error_message = "To use the azure cache type you must set var.cache.azure. see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section for config details."
+  }
+  validation {
+    condition     = var.cache.type == "s3" ? length(var.cache.azure) > 0 : true
+    error_message = "To use the s3 cache type you must set var.cache.s3 see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section for config details."
+  }
+
+  validation {
+    condition     = var.cache.type == "gcs" || var.cache.type == "s3" || var.cache.type == "local" || var.cache.type == "azure" ? true : false
+    error_message = "Cache type must be one of 's3', 'gcs', 'azure', or 'local'."
   }
 
   default = {
-    type   = ""
+    type   = "local"
     path   = ""
     shared = false
     gcs    = {}

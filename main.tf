@@ -9,10 +9,8 @@ resource "helm_release" "gitlab_runner" {
   create_namespace = var.create_namespace
   atomic           = var.atomic
 
-
   values = [
     yamlencode({
-
       image                   = var.runner_image
       gitlabUrl               = var.gitlab_url
       concurrent              = var.concurrent
@@ -21,7 +19,6 @@ resource "helm_release" "gitlab_runner" {
       replicas                = local.replicas
       unregisterRunners       = var.unregister_runners
       secrets                 = var.additional_secrets
-
 
       runners = {
         name        = var.runner_name

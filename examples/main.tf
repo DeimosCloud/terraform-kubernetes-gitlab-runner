@@ -1,3 +1,10 @@
+locals {
+  labels = {
+    "node-kind" = "ci"
+  }
+
+}
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 # PUBLIC GKE WITH NODE POOL AND SERVICE ACCOUNT
@@ -63,11 +70,8 @@ module "gke_node_pool_gitlab" {
   }]
 
   # Labels will be used in node selectors to ensure pods get scheduled to nodes with the same labels
-  labels = {
-    "node-kind" = "ci"
-  }
+  labels = local.labels
 }
-
 
 
 module "gitlab-runner" {
@@ -78,17 +82,23 @@ module "gitlab-runner" {
   runner_registration_token = var.runner_registration_token
   namespace                 = var.runner_namespace
   image_pull_secrets        = ["some-pull-secret"]
+  runner_name               = "my-runner"
 
   # Mount docker socket instead of using docker-in-docker
-  mount_docker_socket = true
+  build_job_mount_docker_socket = true
 
-  # Job pods should be scheduled on nodes with this label
-  node_selectors = {
-    "node-kind" = "ci"
-  }
+  # pods should be scheduled on nodes with this label
+  build_job_node_selectors = local.labels
+  manager_node_selectors   = local.labels
 
   # Pods should be able to tolerate taints
-  node_tolerations = {
+  manager_node_tolerations = [{
+    key      = "node.gitlab.ci/dedicated"
+    operator = "Exists"
+    effect   = "NO_SCHEDULE"
+  }]
+
+  build_job_node_tolerations = {
     "node.gitlab.ci/dedicated=true" = "NO_SCHEDULE"
   }
 

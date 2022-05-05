@@ -41,3 +41,4 @@ variable "runner_namespace" {
 variable "runner_machine_type" {
   description = "The machine type to use when creating the node pools"
 }
+

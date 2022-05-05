@@ -62,6 +62,12 @@ variable "release_name" {
   default     = "gitlab-runner"
 }
 
+variable "atomic" {
+  description = "whether to deploy the entire module as a unit"
+  type        = bool
+  default     = true
+}
+
 variable "build_job_default_container_image" {
   description = "Default container image to use for builds when none is specified"
   type        = string
@@ -92,11 +98,6 @@ variable "concurrent" {
 variable "create_service_account" {
   default     = true
   description = "If true, the service account, it's role and rolebinding will be created, else, the service account is assumed to already be created"
-}
-
-variable "use_local_cache" {
-  default     = false
-  description = "Use path on nodes for caching"
 }
 
 variable "local_cache_dir" {
@@ -154,38 +155,6 @@ variable "build_job_pod_annotations" {
 }
 
 
-variable "cache_type" {
-  description = "One of: s3, gcs, azure. Only used when var.use_local_cache is false"
-  default     = null
-  type        = string
-}
-
-variable "cache_path" {
-  description = "Name of the path to prepend to the cache URL. Only used when var.use_local_cache is false"
-  default     = null
-  type        = string
-}
-
-variable "cache_shared" {
-  description = "Enables cache sharing between runners. Only used when var.use_local_cache is false"
-  default     = false
-}
-
-variable "azure_cache_conf" {
-  description = "Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscacheazure-section. Only used when var.use_local_cache is false"
-  default     = {}
-}
-
-variable "gcs_cache_conf" {
-  description = "Cache parameters define using Azure Blob Storage for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscachegcs-section. Only used when var.use_local_cache is false"
-  default     = {}
-}
-
-variable "s3_cache_conf" {
-  description = "Cache parameters define using S3 for caching as seen https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscaches3-section. Only used when var.use_local_cache is false"
-  default     = {}
-}
-
 variable "build_job_secret_volumes" {
   description = "Secret volume configuration instructs Kubernetes to use a secret that is defined in Kubernetes cluster and mount it inside of the containes as defined https://docs.gitlab.com/runner/executors/kubernetes.html#secret-volumes"
   type = object({
@@ -229,3 +198,71 @@ variable "manager_pod_annotations" {
   default     = {}
 }
 
+variable "additional_secrets" {
+  description = "additional secrets to mount into the manager pods"
+  type        = list(map(string))
+  default     = []
+}
+
+variable "replicas" {
+  description = "the number of manager pods to create"
+  type        = number
+  default     = 1
+}
+
+variable "runner_name" {
+  description = "name of the runner"
+  type        = string
+}
+
+variable "unregister_runners" {
+  description = "whether runners should be unregistered when pool is deprovisioned"
+  type        = bool
+  default     = true
+}
+
+variable "runner_token" {
+  description = "token of already registered runer. to use this var.runner_registration_token must be set to null"
+  type        = string
+  default     = null
+}
+
+
+variable "cache" {
+  description = "Describes the properties of the cache. type can be either of ['local', 'gcs', 's3', 'azure'], path defines a path to append to the bucket url, shared specifies whether the cache can be shared between runners. you also specify the individual properties of the particular cache type you select. see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section"
+  type = object({
+    type   = string
+    path   = string
+    shared = bool
+    gcs    = map(any)
+    s3     = map(any)
+    azure  = map(any)
+  })
+
+  validation {
+    condition     = var.cache.type == "gcs" ? lookup(var.cache.gcs, "CredentialsFile", "") != "" || lookup(var.cache.gcs, "AccessID", "") != "" : true
+    error_message = "To use the gcs cache type you must set either CredentialsFile or AccessID and PrivateKey in var.cache.gcs. see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section for config details."
+  }
+  validation {
+    condition     = var.cache.type == "azure" ? length(var.cache.azure) > 0 : true
+    error_message = "To use the azure cache type you must set var.cache.azure. see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section for config details."
+  }
+  validation {
+    condition     = var.cache.type == "s3" ? length(var.cache.azure) > 0 : true
+    error_message = "To use the s3 cache type you must set var.cache.s3 see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section for config details."
+  }
+
+  validation {
+    condition     = var.cache.type == "gcs" || var.cache.type == "s3" || var.cache.type == "local" || var.cache.type == "azure" ? true : false
+    error_message = "Cache type must be one of 's3', 'gcs', 'azure', or 'local'."
+  }
+
+  default = {
+    type   = "local"
+    path   = ""
+    shared = false
+    gcs    = {}
+    s3     = {}
+    azure  = {}
+  }
+}

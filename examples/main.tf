@@ -25,21 +25,20 @@ module "gke_cluster" {
 # NODE POOL
 # Node pool for running regular workloads
 #------------------------------------------------------------
-module "gke_node_pool" {
-  source  = "DeimosCloud/gke/google//modules/gke-node-pool"
-  version = "1.0.0"
-
-  project_id = var.project_id
-  name       = "default-node-pool"
-  cluster    = module.gke_cluster.name
-  location   = var.region
-
+resource "google_container_node_pool" "gke_node_pool" {
+  name               = "default-node-pool"
+  cluster            = module.gke_cluster.name
   initial_node_count = "1"
-  min_node_count     = "1"
-  max_node_count     = "5"
 
-  machine_type = var.gke_machine_type
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 3
+  }
 
+  node_config {
+    image_type   = "COS"
+    machine_type = var.gke_machine_type
+  }
 }
 
 
@@ -47,30 +46,30 @@ module "gke_node_pool" {
 # Gitlab Node Pool
 # Node pool for running gitlab Jobs
 #------------------------------------------------------------
-module "gke_node_pool_gitlab" {
-  source  = "DeimosCloud/gke/google//modules/gke-node-pool"
-  version = "1.0.0"
-
-  project_id = var.project_id
-  name       = "gitlab-runner"
-  cluster    = module.gke_cluster.name
-  location   = var.region
-
+resource "google_container_node_pool" "gitlab_runner_pool" {
+  name               = "gitlab-runner"
+  cluster            = module.gke_cluster.name
   initial_node_count = "0"
-  min_node_count     = "0"
-  max_node_count     = "3"
 
-  machine_type = var.runner_machine_type
+  autoscaling {
+    min_node_count = 0
+    max_node_count = 3
+  }
 
-  # Only pods that tolerate this taint will be scheduled here
-  taints = [{
-    key    = "node.gitlab.ci/dedicated"
-    value  = "true"
-    effect = "NO_SCHEDULE"
-  }]
+  node_config {
+    image_type   = "COS"
+    machine_type = var.runner_machine_type
 
-  # Labels will be used in node selectors to ensure pods get scheduled to nodes with the same labels
-  labels = local.labels
+    # Labels will be used in node selectors to ensure pods get scheduled to nodes with the same labels
+    labels = local.labels
+
+    # Only pods that tolerate this taint will be scheduled here
+    taint = [{
+      key    = "node.gitlab.ci/dedicated"
+      value  = "true"
+      effect = "NO_SCHEDULE"
+    }]
+  }
 }
 
 
@@ -102,5 +101,5 @@ module "gitlab-runner" {
     "node.gitlab.ci/dedicated=true" = "NO_SCHEDULE"
   }
 
-  depends_on = [module.gke_cluster]
+  depends_on = [google_container_node_pool.gitlab_runner_pool]
 }

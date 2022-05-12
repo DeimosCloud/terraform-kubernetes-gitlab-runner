@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0](https://github.com/DeimosCloud/terraform-kubernetes-gitlab-runner/compare/v1.3.0...v1.4.0) (2022-05-12)
+
+
+### Features
+
+* added variables for cpu and memory request and limit ([#9](https://github.com/DeimosCloud/terraform-kubernetes-gitlab-runner/issues/9)) ([aa44444](https://github.com/DeimosCloud/terraform-kubernetes-gitlab-runner/commit/aa44444fe396f40f8c8fe210dd2f08b2454a001b))
+
 ## [1.3.0](https://github.com/DeimosCloud/terraform-kubernetes-gitlab-runner/compare/v1.2.0...v1.3.0) (2022-05-05)
 
 

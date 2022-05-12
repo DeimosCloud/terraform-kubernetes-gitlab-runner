@@ -71,7 +71,9 @@ No modules.
 | <a name="input_additional_secrets"></a> [additional\_secrets](#input\_additional\_secrets) | additional secrets to mount into the manager pods | `list(map(string))` | `[]` | no |
 | <a name="input_atomic"></a> [atomic](#input\_atomic) | whether to deploy the entire module as a unit | `bool` | `true` | no |
 | <a name="input_build_dir"></a> [build\_dir](#input\_build\_dir) | Path on nodes for caching | `string` | `null` | no |
+| <a name="input_build_job_cpu"></a> [build\_job\_cpu](#input\_build\_job\_cpu) | The CPU allocation given to and the requested for build containers | `map(any)` | <pre>{<br>  "limit": "2",<br>  "request": "1"<br>}</pre> | no |
 | <a name="input_build_job_default_container_image"></a> [build\_job\_default\_container\_image](#input\_build\_job\_default\_container\_image) | Default container image to use for builds when none is specified | `string` | `"ubuntu:18.04"` | no |
+| <a name="input_build_job_memory"></a> [build\_job\_memory](#input\_build\_job\_memory) | The memory allocation given to and the requested for build containers | `map(any)` | <pre>{<br>  "limit": "1Gi",<br>  "request": "512Mi"<br>}</pre> | no |
 | <a name="input_build_job_mount_docker_socket"></a> [build\_job\_mount\_docker\_socket](#input\_build\_job\_mount\_docker\_socket) | Path on nodes for caching | `bool` | `false` | no |
 | <a name="input_build_job_node_selectors"></a> [build\_job\_node\_selectors](#input\_build\_job\_node\_selectors) | A map of node selectors to apply to the pods | `map` | `{}` | no |
 | <a name="input_build_job_node_tolerations"></a> [build\_job\_node\_tolerations](#input\_build\_job\_node\_tolerations) | A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings | `map` | `{}` | no |

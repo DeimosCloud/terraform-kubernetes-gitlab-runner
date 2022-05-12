@@ -266,21 +266,21 @@ variable "cache" {
   }
 }
 
-variable "build_job_cpu" {
+variable "build_job_limits" {
   description = "The CPU allocation given to and the requested for build containers"
   type        = map(any)
   default = {
-    limit   = "2"
-    request = "1"
+    cpu    = "2"
+    memory = "1Gi"
   }
 }
 
-variable "build_job_memory" {
-  description = "The memory allocation given to and the requested for build containers"
+variable "build_job_requests" {
+  description = "The CPU allocation given to and the requested for build containers"
   type        = map(any)
   default = {
-    limit   = "1Gi"
-    request = "512Mi"
+    cpu    = "1"
+    memory = "512Mi"
   }
 }
 

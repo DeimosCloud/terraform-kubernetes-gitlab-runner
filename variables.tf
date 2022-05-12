@@ -33,7 +33,7 @@ variable "service_account_clusterwide_access" {
 
 variable "chart_version" {
   description = "The version of the chart"
-  default     = "0.36.0"
+  default     = "0.40.1"
 }
 
 variable "runner_registration_token" {
@@ -227,7 +227,6 @@ variable "runner_token" {
   default     = null
 }
 
-
 variable "cache" {
   description = "Describes the properties of the cache. type can be either of ['local', 'gcs', 's3', 'azure'], path defines a path to append to the bucket url, shared specifies whether the cache can be shared between runners. you also specify the individual properties of the particular cache type you select. see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section"
   type = object({
@@ -284,3 +283,4 @@ variable "build_job_memory" {
     request = "512Mi"
   }
 }
+

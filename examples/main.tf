@@ -70,6 +70,7 @@ resource "google_container_node_pool" "gitlab_runner_pool" {
       effect = "NO_SCHEDULE"
     }]
   }
+
 }
 
 

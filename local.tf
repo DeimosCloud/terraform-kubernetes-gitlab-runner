@@ -14,3 +14,4 @@ locals {
   }
   cache_secret_name = lookup(local.cache_secret_config, var.cache.type, "")
 }
+

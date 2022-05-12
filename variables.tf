@@ -265,3 +265,22 @@ variable "cache" {
     azure  = {}
   }
 }
+
+variable "build_job_limits" {
+  description = "The CPU allocation given to and the requested for build containers"
+  type        = map(any)
+  default = {
+    cpu    = "2"
+    memory = "1Gi"
+  }
+}
+
+variable "build_job_requests" {
+  description = "The CPU allocation given to and the requested for build containers"
+  type        = map(any)
+  default = {
+    cpu    = "1"
+    memory = "512Mi"
+  }
+}
+

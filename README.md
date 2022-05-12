@@ -52,7 +52,7 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.4.1 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.5.1 |
 
 ## Modules
 
@@ -72,12 +72,14 @@ No modules.
 | <a name="input_atomic"></a> [atomic](#input\_atomic) | whether to deploy the entire module as a unit | `bool` | `true` | no |
 | <a name="input_build_dir"></a> [build\_dir](#input\_build\_dir) | Path on nodes for caching | `string` | `null` | no |
 | <a name="input_build_job_default_container_image"></a> [build\_job\_default\_container\_image](#input\_build\_job\_default\_container\_image) | Default container image to use for builds when none is specified | `string` | `"ubuntu:18.04"` | no |
+| <a name="input_build_job_limits"></a> [build\_job\_limits](#input\_build\_job\_limits) | The CPU allocation given to and the requested for build containers | `map(any)` | <pre>{<br>  "cpu": "2",<br>  "memory": "1Gi"<br>}</pre> | no |
 | <a name="input_build_job_mount_docker_socket"></a> [build\_job\_mount\_docker\_socket](#input\_build\_job\_mount\_docker\_socket) | Path on nodes for caching | `bool` | `false` | no |
 | <a name="input_build_job_node_selectors"></a> [build\_job\_node\_selectors](#input\_build\_job\_node\_selectors) | A map of node selectors to apply to the pods | `map` | `{}` | no |
 | <a name="input_build_job_node_tolerations"></a> [build\_job\_node\_tolerations](#input\_build\_job\_node\_tolerations) | A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings | `map` | `{}` | no |
 | <a name="input_build_job_pod_annotations"></a> [build\_job\_pod\_annotations](#input\_build\_job\_pod\_annotations) | A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. | `map` | `{}` | no |
 | <a name="input_build_job_pod_labels"></a> [build\_job\_pod\_labels](#input\_build\_job\_pod\_labels) | A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. | `map` | `{}` | no |
 | <a name="input_build_job_privileged"></a> [build\_job\_privileged](#input\_build\_job\_privileged) | Run all containers with the privileged flag enabled. This will allow the docker:dind image to run if you need to run Docker | `bool` | `false` | no |
+| <a name="input_build_job_requests"></a> [build\_job\_requests](#input\_build\_job\_requests) | The CPU allocation given to and the requested for build containers | `map(any)` | <pre>{<br>  "cpu": "1",<br>  "memory": "512Mi"<br>}</pre> | no |
 | <a name="input_build_job_run_container_as_user"></a> [build\_job\_run\_container\_as\_user](#input\_build\_job\_run\_container\_as\_user) | SecurityContext: runAsUser for all running job pods | `string` | `null` | no |
 | <a name="input_build_job_secret_volumes"></a> [build\_job\_secret\_volumes](#input\_build\_job\_secret\_volumes) | Secret volume configuration instructs Kubernetes to use a secret that is defined in Kubernetes cluster and mount it inside of the containes as defined https://docs.gitlab.com/runner/executors/kubernetes.html#secret-volumes | <pre>object({<br>    name       = string<br>    mount_path = string<br>    read_only  = string<br>    items      = map(string)<br>  })</pre> | <pre>{<br>  "items": {},<br>  "mount_path": null,<br>  "name": null,<br>  "read_only": null<br>}</pre> | no |
 | <a name="input_cache"></a> [cache](#input\_cache) | Describes the properties of the cache. type can be either of ['local', 'gcs', 's3', 'azure'], path defines a path to append to the bucket url, shared specifies whether the cache can be shared between runners. you also specify the individual properties of the particular cache type you select. see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section | <pre>object({<br>    type   = string<br>    path   = string<br>    shared = bool<br>    gcs    = map(any)<br>    s3     = map(any)<br>    azure  = map(any)<br>  })</pre> | <pre>{<br>  "azure": {},<br>  "gcs": {},<br>  "path": "",<br>  "s3": {},<br>  "shared": false,<br>  "type": "local"<br>}</pre> | no |

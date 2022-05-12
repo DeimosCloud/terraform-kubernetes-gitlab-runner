@@ -22,6 +22,10 @@ locals {
     %{~endfor~}
 %{~endif}
   [runners.kubernetes]
+    cpu_limit = "${var.build_job_limits.cpu}"
+    cpu_request = "${var.build_job_requests.cpu}"
+    memory_limit = "${var.build_job_limits.memory}"
+    memory_request = "${var.build_job_requests.memory}"
   %{~if var.build_job_default_container_image != null~}
     image = "${var.build_job_default_container_image}"
   %{~endif~}

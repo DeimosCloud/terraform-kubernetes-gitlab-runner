@@ -115,6 +115,11 @@ variable "local_cache_dir" {
   type        = string
 }
 
+variable "build_job_hostmounts" {
+  description = "A map of name:path for which each named path will cause the host path to be mounted at the identical mountpoint in the build container."
+  default     = {}
+}
+
 variable "build_job_mount_docker_socket" {
   default     = false
   description = "Path on nodes for caching"

@@ -123,8 +123,14 @@ variable "build_job_hostmounts" {
 
 variable "build_job_mount_docker_socket" {
   default     = false
-  description = "Path on nodes for caching"
+  description = "Whether to hostmount the /var/run/docker.sock from host into the build container"
   type        = bool
+}
+
+variable "build_job_pvcs" {
+  default     = {}
+  description = "A map of path:config for which each values' path is where the Persistent Volume so named should be mounted in the build container.  ie: build_job_pvcs = { '/root/caches/other-cache' = { name = 'vol-12345678' } }"
+  type        = map(map(string))
 }
 
 variable "build_job_run_container_as_user" {

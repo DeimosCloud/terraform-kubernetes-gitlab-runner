@@ -11,7 +11,7 @@ module "gitlab_runner" {
   release_name              = "${var.project_name}-runner-${var.environment}"
   runner_tags               = var.runner_tags
   runner_registration_token = var.runner_registration_token
-  default_runner_image      = var.default_runner_image
+  runner_image              = var.runner_image
   namespace                 = var.gitlab_runner_namespace
 
   # Pass annotations to service account. This can be for workload/pod/ identity
@@ -19,11 +19,8 @@ module "gitlab_runner" {
     "iam.gke.io/gcp-service-account" = module.workload_identity["gitlab-runner"].gcp_service_account_email
   }
 
-  # Use Local cache on Kubernetes nodes
-  use_local_cache     = true
-
   # Mount docker socket instead of using docker-in-docker
-  mount_docker_socket = true
+  build_job_mount_docker_socket = true
 
   depends_on = [module.gke_cluster, module.gke_node_pool]
 }

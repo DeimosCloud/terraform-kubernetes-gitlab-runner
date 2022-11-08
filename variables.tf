@@ -121,12 +121,6 @@ variable "build_job_mount_docker_socket" {
   type        = bool
 }
 
-variable "build_dir" {
-  default     = null
-  type        = string
-  description = "Path on nodes for caching"
-}
-
 variable "build_job_run_container_as_user" {
   default     = null
   type        = string

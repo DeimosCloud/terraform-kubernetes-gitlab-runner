@@ -49,7 +49,7 @@ Full contributing guidelines are covered [here](CONTRIBUTING.md).
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.5.1 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.7.1 |
 
 ## Modules
 
@@ -67,14 +67,13 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_additional_secrets"></a> [additional\_secrets](#input\_additional\_secrets) | additional secrets to mount into the manager pods | `list(map(string))` | `[]` | no |
 | <a name="input_atomic"></a> [atomic](#input\_atomic) | whether to deploy the entire module as a unit | `bool` | `true` | no |
-| <a name="input_build_dir"></a> [build\_dir](#input\_build\_dir) | Path on nodes for caching | `string` | `null` | no |
 | <a name="input_build_job_default_container_image"></a> [build\_job\_default\_container\_image](#input\_build\_job\_default\_container\_image) | Default container image to use for builds when none is specified | `string` | `"ubuntu:18.04"` | no |
 | <a name="input_build_job_limits"></a> [build\_job\_limits](#input\_build\_job\_limits) | The CPU allocation given to and the requested for build containers | `map(any)` | <pre>{<br>  "cpu": "2",<br>  "memory": "1Gi"<br>}</pre> | no |
 | <a name="input_build_job_mount_docker_socket"></a> [build\_job\_mount\_docker\_socket](#input\_build\_job\_mount\_docker\_socket) | Path on nodes for caching | `bool` | `false` | no |
-| <a name="input_build_job_node_selectors"></a> [build\_job\_node\_selectors](#input\_build\_job\_node\_selectors) | A map of node selectors to apply to the pods | `map` | `{}` | no |
-| <a name="input_build_job_node_tolerations"></a> [build\_job\_node\_tolerations](#input\_build\_job\_node\_tolerations) | A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings | `map` | `{}` | no |
-| <a name="input_build_job_pod_annotations"></a> [build\_job\_pod\_annotations](#input\_build\_job\_pod\_annotations) | A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. | `map` | `{}` | no |
-| <a name="input_build_job_pod_labels"></a> [build\_job\_pod\_labels](#input\_build\_job\_pod\_labels) | A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. | `map` | `{}` | no |
+| <a name="input_build_job_node_selectors"></a> [build\_job\_node\_selectors](#input\_build\_job\_node\_selectors) | A map of node selectors to apply to the pods | `map(string)` | `{}` | no |
+| <a name="input_build_job_node_tolerations"></a> [build\_job\_node\_tolerations](#input\_build\_job\_node\_tolerations) | A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings | `map(string)` | `{}` | no |
+| <a name="input_build_job_pod_annotations"></a> [build\_job\_pod\_annotations](#input\_build\_job\_pod\_annotations) | A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. | `map(string)` | `{}` | no |
+| <a name="input_build_job_pod_labels"></a> [build\_job\_pod\_labels](#input\_build\_job\_pod\_labels) | A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. | `map(string)` | `{}` | no |
 | <a name="input_build_job_privileged"></a> [build\_job\_privileged](#input\_build\_job\_privileged) | Run all containers with the privileged flag enabled. This will allow the docker:dind image to run if you need to run Docker | `bool` | `false` | no |
 | <a name="input_build_job_requests"></a> [build\_job\_requests](#input\_build\_job\_requests) | The CPU allocation given to and the requested for build containers | `map(any)` | <pre>{<br>  "cpu": "1",<br>  "memory": "512Mi"<br>}</pre> | no |
 | <a name="input_build_job_run_container_as_user"></a> [build\_job\_run\_container\_as\_user](#input\_build\_job\_run\_container\_as\_user) | SecurityContext: runAsUser for all running job pods | `string` | `null` | no |
@@ -88,10 +87,10 @@ No modules.
 | <a name="input_gitlab_url"></a> [gitlab\_url](#input\_gitlab\_url) | The GitLab Server URL (with protocol) that want to register the runner against | `string` | `"https://gitlab.com/"` | no |
 | <a name="input_image_pull_secrets"></a> [image\_pull\_secrets](#input\_image\_pull\_secrets) | A array of secrets that are used to authenticate Docker image pulling. | `list(string)` | `[]` | no |
 | <a name="input_local_cache_dir"></a> [local\_cache\_dir](#input\_local\_cache\_dir) | Path on nodes for caching | `string` | `"/tmp/gitlab/cache"` | no |
-| <a name="input_manager_node_selectors"></a> [manager\_node\_selectors](#input\_manager\_node\_selectors) | A map of node selectors to apply to the pods | `map` | `{}` | no |
-| <a name="input_manager_node_tolerations"></a> [manager\_node\_tolerations](#input\_manager\_node\_tolerations) | A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings | `map` | `{}` | no |
-| <a name="input_manager_pod_annotations"></a> [manager\_pod\_annotations](#input\_manager\_pod\_annotations) | A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. | `map` | `{}` | no |
-| <a name="input_manager_pod_labels"></a> [manager\_pod\_labels](#input\_manager\_pod\_labels) | A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. | `map` | `{}` | no |
+| <a name="input_manager_node_selectors"></a> [manager\_node\_selectors](#input\_manager\_node\_selectors) | A map of node selectors to apply to the pods | `map(string)` | `{}` | no |
+| <a name="input_manager_node_tolerations"></a> [manager\_node\_tolerations](#input\_manager\_node\_tolerations) | A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings | `map(string)` | `{}` | no |
+| <a name="input_manager_pod_annotations"></a> [manager\_pod\_annotations](#input\_manager\_pod\_annotations) | A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. | `map(string)` | `{}` | no |
+| <a name="input_manager_pod_labels"></a> [manager\_pod\_labels](#input\_manager\_pod\_labels) | A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. | `map(string)` | `{}` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | n/a | `string` | `"gitlab-runner"` | no |
 | <a name="input_release_name"></a> [release\_name](#input\_release\_name) | The helm release name | `string` | `"gitlab-runner"` | no |
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | the number of manager pods to create | `number` | `1` | no |
@@ -103,10 +102,10 @@ No modules.
 | <a name="input_runner_tags"></a> [runner\_tags](#input\_runner\_tags) | Specify the tags associated with the runner. Comma-separated list of tags. | `string` | n/a | yes |
 | <a name="input_runner_token"></a> [runner\_token](#input\_runner\_token) | token of already registered runer. to use this var.runner\_registration\_token must be set to null | `string` | `null` | no |
 | <a name="input_service_account"></a> [service\_account](#input\_service\_account) | The name of the Service account to create | `string` | `"gitlab-runner"` | no |
-| <a name="input_service_account_annotations"></a> [service\_account\_annotations](#input\_service\_account\_annotations) | The annotations to add to the service account | `map` | `{}` | no |
+| <a name="input_service_account_annotations"></a> [service\_account\_annotations](#input\_service\_account\_annotations) | The annotations to add to the service account | `map(any)` | `{}` | no |
 | <a name="input_service_account_clusterwide_access"></a> [service\_account\_clusterwide\_access](#input\_service\_account\_clusterwide\_access) | Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace | `bool` | `false` | no |
 | <a name="input_unregister_runners"></a> [unregister\_runners](#input\_unregister\_runners) | whether runners should be unregistered when pool is deprovisioned | `bool` | `true` | no |
-| <a name="input_values"></a> [values](#input\_values) | Additional values to be passed to the gitlab-runner helm chart | `map` | `{}` | no |
+| <a name="input_values"></a> [values](#input\_values) | Additional values to be passed to the gitlab-runner helm chart | `map(any)` | `{}` | no |
 | <a name="input_values_file"></a> [values\_file](#input\_values\_file) | Path to Values file to be passed to gitlab-runner helm chart | `string` | `null` | no |
 
 ## Outputs

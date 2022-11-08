@@ -24,16 +24,19 @@ variable "service_account" {
 variable "service_account_annotations" {
   description = "The annotations to add to the service account"
   default     = {}
+  type        = map(any)
 }
 
 variable "service_account_clusterwide_access" {
   description = "Run the gitlab-bastion container with the ability to deploy/manage containers of jobs cluster-wide or only within namespace"
   default     = false
+  type        = bool
 }
 
 variable "chart_version" {
   description = "The version of the chart"
   default     = "0.40.1"
+  type        = string
 }
 
 variable "runner_registration_token" {
@@ -55,11 +58,13 @@ variable "runner_locked" {
 variable "run_untagged_jobs" {
   description = "Specify if jobs without tags should be run. https://docs.gitlab.com/ce/ci/runners/#runner-is-allowed-to-run-untagged-jobs"
   default     = false
+  type        = bool
 }
 
 variable "release_name" {
   description = "The helm release name"
   default     = "gitlab-runner"
+  type        = string
 }
 
 variable "atomic" {
@@ -83,26 +88,31 @@ variable "values_file" {
 variable "values" {
   description = "Additional values to be passed to the gitlab-runner helm chart"
   default     = {}
+  type        = map(any)
 }
 
 variable "gitlab_url" {
   description = "The GitLab Server URL (with protocol) that want to register the runner against"
   default     = "https://gitlab.com/"
+  type        = string
 }
 
 variable "concurrent" {
   default     = 10
   description = "Configure the maximum number of concurrent jobs"
+  type        = number
 }
 
 variable "create_service_account" {
   default     = true
   description = "If true, the service account, it's role and rolebinding will be created, else, the service account is assumed to already be created"
+  type        = bool
 }
 
 variable "local_cache_dir" {
   default     = "/tmp/gitlab/cache"
   description = "Path on nodes for caching"
+  type        = string
 }
 
 variable "build_job_mount_docker_socket" {
@@ -132,26 +142,31 @@ variable "build_job_privileged" {
 variable "docker_fs_group" {
   description = "The fsGroup to use for docker. This is added to security context when mount_docker_socket is enabled"
   default     = 412
+  type        = number
 }
 
 variable "build_job_node_selectors" {
   description = "A map of node selectors to apply to the pods"
   default     = {}
+  type        = map(string)
 }
 
 variable "build_job_node_tolerations" {
   description = "A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings"
   default     = {}
+  type        = map(string)
 }
 
 variable "build_job_pod_labels" {
   description = "A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. "
   default     = {}
+  type        = map(string)
 }
 
 variable "build_job_pod_annotations" {
   description = "A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. "
   default     = {}
+  type        = map(string)
 }
 
 
@@ -181,21 +196,25 @@ variable "image_pull_secrets" {
 variable "manager_node_selectors" {
   description = "A map of node selectors to apply to the pods"
   default     = {}
+  type        = map(string)
 }
 
 variable "manager_node_tolerations" {
   description = "A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings"
   default     = {}
+  type        = map(string)
 }
 
 variable "manager_pod_labels" {
   description = "A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. "
   default     = {}
+  type        = map(string)
 }
 
 variable "manager_pod_annotations" {
   description = "A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. "
   default     = {}
+  type        = map(string)
 }
 
 variable "additional_secrets" {

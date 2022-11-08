@@ -77,8 +77,8 @@ locals {
     %{~for name, config in var.build_job_hostmounts~}
       [[runners.kubernetes.volumes.host_path]]
         name = "${name}"
-        mount_path = "${config.path}"
-        host_path = "${config.path}"
+        mount_path = "${lookup(config, "container_path", config.host_path)}"
+        host_path = "${config.host_path}"
         read_only = ${lookup(config, "read_only", "false")}
     %{~endfor~}
     %{~if lookup(var.build_job_secret_volumes, "name", null) != null~}

@@ -116,7 +116,7 @@ variable "local_cache_dir" {
 }
 
 variable "build_job_hostmounts" {
-  description = "A map of name:path for which each named path will cause the host path to be mounted at the identical mountpoint in the build container."
+  description = "A list of maps of name:{host_path, container_path, read_only} for which each named value will result in a hostmount of the host path to the container at container_path.  If not given, container_path fallsback to host_path:   dogstatsd = { host_path = '/var/run/dogstatsd' } will mount the host /var/run/dogstatsd to the same path in container."
   default     = {}
 }
 

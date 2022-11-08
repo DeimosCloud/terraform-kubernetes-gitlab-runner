@@ -266,7 +266,7 @@ variable "cache" {
     error_message = "To use the azure cache type you must set var.cache.azure. see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section for config details."
   }
   validation {
-    condition     = var.cache.type == "s3" ? length(var.cache.azure) > 0 : true
+    condition     = var.cache.type == "s3" ? length(var.cache.s3) > 0 : true
     error_message = "To use the s3 cache type you must set var.cache.s3 see https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscache-section for config details."
   }
 

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5.0](https://github.com/DeimosCloud/terraform-kubernetes-gitlab-runner/compare/v1.4.0...v1.5.0) (2022-11-10)
+
+
+### Features
+
+* Map hostmount volumes through to config.toml ([#12](https://github.com/DeimosCloud/terraform-kubernetes-gitlab-runner/issues/12)) ([8641b32](https://github.com/DeimosCloud/terraform-kubernetes-gitlab-runner/commit/8641b32a8281ed157f8ef9cfdcaf9936944ef869))
+
 ## [1.4.0](https://github.com/DeimosCloud/terraform-kubernetes-gitlab-runner/compare/v1.3.0...v1.4.0) (2022-05-12)
 
 

@@ -111,7 +111,7 @@ As noted above, a contrived example of mounting in a different path might be som
 
 This isn't the best example, but there are stranger things in corporate software than I can dream up.
 
-In order to make this UDS appear at a differnt location, you could do the following.  Note that you might want to refer to the actual socker rather than the containing directory as the docker socket is done.  That may make more sense, but to keep parallelism with the dogstatsd example that I (chickenandpork) am using daily, let's map the containing directory: let's map /var/run/datadog/ in the host to the container's /var/run/metrics/ path:
+In order to make this UDS appear at a different location, you could do the following.  Note that you might want to refer to the actual socket rather than the containing directory as the docker.sock is done above.  That likely makes more sense, but to keep parallelism with the dogstatsd example that I (chickenandpork) am using daily, let's map the containing directory: let's map /var/run/datadog/ in the host to the container's /var/run/metrics/ path:
 
 ```hcl
 module "gitlab_runner" {
@@ -138,13 +138,15 @@ This causes the config.toml to create a host_path section:
       ...
 ```
 
+The result is that the Unix -Domain Socket is available at a non-standard location that our custom tools can use, but anything looking in the conventional default location won't see anything.
+
 Although you'd likely use a proper binary to sink metrics in production, you can manually log metrics to test inside the container (or in your build script) using:
 
 ```shell
 echo -n "custom.metric.name:1|c" | nc -U -u -w1 /var/run/metrics/dsd.socket
 ```
 
-In production, you'd likely also make this `read_only`
+In production, you'd likely also make this `read_only`, use filesystem permissions to guard access, and likely too simply configure or improve the errant software, but there are strange side-effects and constraints of long-lived software in industry.
 
 #### Shared Certificates
 

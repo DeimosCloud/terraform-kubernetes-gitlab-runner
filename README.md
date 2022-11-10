@@ -29,6 +29,159 @@ module "gitlab_runner" {
 ### Custom Values
 To pass in custom values use the `var.values` input which specifies a map of values in terraform map format or `var.values_file` which specifies a path containing a valid yaml values file to pass to the Chart
 
+### Hostmounted Directories
+There are a few capabilities enabled by using hostmounted directories; let's look at a few examples of config and what they effectively configure in the config.toml.
+
+#### Docker Socket
+
+The most common hostmount is simply sharing the docker socket to allow the build container to start new containers, but avoid a Docker-in-Docker config.  This is useful to take an unmodified `docker build ...` command from your current build process, and copy it to a .gitlab-ci.yaml or a github action.  To map your docker socket from the docker host to the container, you need to (as above):
+
+```hcl
+module "gitlab_runner" {
+  ...
+  build_job_mount_docker_socket = true
+  ...
+}
+```
+
+This causes the config.toml to create two sections:
+```toml
+[runners.kubernetes.pod_security_context]
+      ...
+      fs_group = ${var.docker_fs_group}
+      ...
+```
+This first section defines a Kubernetes Pod Security Policy that causes the mounted filesystem to have the group value overwritten to this GID (see https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod).  Combined with a `runAsGroup` in Kubernetes, this would ensure that the files in the container are writeable by the process running as a defined GID.
+
+Additionally, the config.toml gains a host_path config:
+
+```toml
+    [runners.kubernetes.volumes]
+      ...
+      [[runners.kubernetes.volumes.host_path]]
+        name = "docker-socket"
+        mount_path = "/var/run/docker.sock"
+        read_only = true
+        host_path = "/var/run/docker.sock"
+      ...
+```
+
+This causes the `/var/run/docker.sock` "volume" (really a Unix-Domain Socket) at the default path to communicate with the docker engine to bemounted in the same location inside the container.  The mount is marked "read_only" because the filesystem cannot have filesystem objects added to it (you're not going to add file or directories to the socket UDS) but the docker command can still write to the socket to send commands.
+
+#### Statsd for Metrics
+
+The standard way of collecting metrics from a Gitlab-Runner is to enable the Prometheus endpoint, and subscribe it for scraping; what if you want to send events?  Statsd has a timer (the Datadog implementation does not), but you can expose the UDS from statsd or dogstatsd to allow simple netcat-based submisison of build events and timings if desired.
+
+For example, the standard UDS for Dogstatsd, the Datadog mostly-drop-in replacement for statsd, is at `/var/run/datadog/dsd.socket`.  I chose to share that entire directory into the build container as follows:
+
+```hcl
+module "gitlab_runner" {
+  ...
+  build_job_hostmounts = {
+    dogstatsd = { host_path = "/var/run/datadog" }
+  }
+  ...
+}
+```
+You may notice that I haven't set a `container_path` to define the `mount_path` in the container at which the host's volume should be mounted.  If it's not defined, `container_path` defaults to the `host_path`.
+
+This causes the config.toml to create a host_path section:
+```toml
+    [runners.kubernetes.volumes]
+      ...
+      [[runners.kubernetes.volumes.host_path]]
+        name = "dogstatsd"
+        mount_path = "/var/run/datadog"
+        read_only = false
+        host_path = "/var/run/datadog"
+      ...
+```
+
+This allows the basic submission of custom metrics to be done with, say, netcat as per the Datadog instructions (https://docs.datadoghq.com/developers/dogstatsd/unix_socket/?tab=host#test-with-netcat):
+
+```shell
+echo -n "custom.metric.name:1|c" | nc -U -u -w1 /var/run/datadog/dsd.socket
+```
+
+If I wanted a non-standard path inside the container (so that, say, some rogue process doesn't automatically log to a socket if it's present in the default location) re can remap the UDS in the contrived example that follows.
+
+#### Statsd for Metrics, nonstandard path
+
+As noted above, a contrived example of mounting in a different path might be some corporate service/daemon in a container that automatically tries to submit metrics if it sees the socket in the filesystem.  Lacking the source or permission to change that automation, but wanting to use the UDS ourselves to sink metrics, we can mount it at a different nonstandard location.
+
+This isn't the best example, but there are stranger things in corporate software than I can dream up.
+
+In order to make this UDS appear at a different location, you could do the following.  Note that you might want to refer to the actual socket rather than the containing directory as the docker.sock is done above.  That likely makes more sense, but to keep parallelism with the dogstatsd example that I (chickenandpork) am using daily, let's map the containing directory: let's map /var/run/datadog/ in the host to the container's /var/run/metrics/ path:
+
+```hcl
+module "gitlab_runner" {
+  ...
+  build_job_hostmounts = {
+    dogstatsd = {
+      host_path = "/var/run/datadog"
+      container_path = "/var/run/metrics"
+    }
+  }
+  ...
+}
+```
+
+This causes the config.toml to create a host_path section:
+```toml
+    [runners.kubernetes.volumes]
+      ...
+      [[runners.kubernetes.volumes.host_path]]
+        name = "dogstatsd"
+        mount_path = "/var/run/metrics"
+        read_only = false
+        host_path = "/var/run/datadog"
+      ...
+```
+
+The result is that the Unix -Domain Socket is available at a non-standard location that our custom tools can use, but anything looking in the conventional default location won't see anything.
+
+Although you'd likely use a proper binary to sink metrics in production, you can manually log metrics to test inside the container (or in your build script) using:
+
+```shell
+echo -n "custom.metric.name:1|c" | nc -U -u -w1 /var/run/metrics/dsd.socket
+```
+
+In production, you'd likely also make this `read_only`, use filesystem permissions to guard access, and likely too simply configure or improve the errant software, but there are strange side-effects and constraints of long-lived software in industry.
+
+#### Shared Certificates
+
+If you're using the TLS docker connection to do docker builds in your CI, and you don't set an empty TLS_CERTS directory, then the docker engine recently defaults to creating certificates, and requiring TLS.  In order to have these certificates available to your build-container's docker command, you may need to share that certificate directory back into the buid container.
+
+This can be done with:
+
+```hcl
+module "gitlab_runner" {
+  ...
+  build_job_hostmounts = {
+    shared_certs = {
+      host_path = "/certs/client",
+      read_only = true
+    }
+  }
+  ...
+}
+```
+
+This causes the config.toml to create a host_path section:
+```toml
+    [runners.kubernetes.volumes]
+      ...
+      [[runners.kubernetes.volumes.host_path]]
+        name = "shared_certs"
+        mount_path = "/certs/client"
+        read_only = true
+        host_path = "/certs/client"
+      ...
+```
+
+In your build, you may need to define the enviroment variable `DOCKER_TLS_CERTDIR=/certs/client` as well to ensure the docker CLI knows where to find them.  The docker CLI should use the TLS tcp/2376 port if it sees a DOCKER_TLS_CERTDIR, but if not, `--host` argument or `DOCKER_HOST=tcp://hostname:2376/` are some options to steer it to the correct port/protocol.
+
+
 
 ## Contributing
 
@@ -68,6 +221,7 @@ No modules.
 | <a name="input_additional_secrets"></a> [additional\_secrets](#input\_additional\_secrets) | additional secrets to mount into the manager pods | `list(map(string))` | `[]` | no |
 | <a name="input_atomic"></a> [atomic](#input\_atomic) | whether to deploy the entire module as a unit | `bool` | `true` | no |
 | <a name="input_build_job_default_container_image"></a> [build\_job\_default\_container\_image](#input\_build\_job\_default\_container\_image) | Default container image to use for builds when none is specified | `string` | `"ubuntu:18.04"` | no |
+| <a name="input_build_job_hostmounts"></a> [build\_job\_hostmounts](#input\_build\_job\_hostmounts) | A list of maps of name:{host\_path, container\_path, read\_only} for which each named value will result in a hostmount of the host path to the container at container\_path.  If not given, container\_path fallsback to host\_path:   dogstatsd = { host\_path = '/var/run/dogstatsd' } will mount the host /var/run/dogstatsd to the same path in container. | `map(map(any))` | `{}` | no |
 | <a name="input_build_job_limits"></a> [build\_job\_limits](#input\_build\_job\_limits) | The CPU allocation given to and the requested for build containers | `map(any)` | <pre>{<br>  "cpu": "2",<br>  "memory": "1Gi"<br>}</pre> | no |
 | <a name="input_build_job_mount_docker_socket"></a> [build\_job\_mount\_docker\_socket](#input\_build\_job\_mount\_docker\_socket) | Path on nodes for caching | `bool` | `false` | no |
 | <a name="input_build_job_node_selectors"></a> [build\_job\_node\_selectors](#input\_build\_job\_node\_selectors) | A map of node selectors to apply to the pods | `map(string)` | `{}` | no |

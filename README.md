@@ -182,6 +182,20 @@ This causes the config.toml to create a host_path section:
 In your build, you may need to define the enviroment variable `DOCKER_TLS_CERTDIR=/certs/client` as well to ensure the docker CLI knows where to find them.  The docker CLI should use the TLS tcp/2376 port if it sees a DOCKER_TLS_CERTDIR, but if not, `--host` argument or `DOCKER_HOST=tcp://hostname:2376/` are some options to steer it to the correct port/protocol.
 
 
+### Persistent Volume Claims
+For some builds, you'll want some sort of cache standing by, or some static content, or other reason to map a persistent volume into the build container.  This can be done by mapping name/mountpoint pairs, such as:
+
+```hcl
+module "gitlab_runner" {
+  ...
+  build_job_pvcs = {
+    "vol-12345678" = "/root/caches/other-cache"
+  }
+  ...
+}
+```
+In this example, "vol-12345678" is the identifier of a persistent volume claim in AWS; the "/root/caches/other-cache" is the desired mountpoint of the volume.
+
 
 ## Contributing
 
@@ -223,12 +237,13 @@ No modules.
 | <a name="input_build_job_default_container_image"></a> [build\_job\_default\_container\_image](#input\_build\_job\_default\_container\_image) | Default container image to use for builds when none is specified | `string` | `"ubuntu:18.04"` | no |
 | <a name="input_build_job_hostmounts"></a> [build\_job\_hostmounts](#input\_build\_job\_hostmounts) | A list of maps of name:{host\_path, container\_path, read\_only} for which each named value will result in a hostmount of the host path to the container at container\_path.  If not given, container\_path fallsback to host\_path:   dogstatsd = { host\_path = '/var/run/dogstatsd' } will mount the host /var/run/dogstatsd to the same path in container. | `map(map(any))` | `{}` | no |
 | <a name="input_build_job_limits"></a> [build\_job\_limits](#input\_build\_job\_limits) | The CPU allocation given to and the requested for build containers | `map(any)` | <pre>{<br>  "cpu": "2",<br>  "memory": "1Gi"<br>}</pre> | no |
-| <a name="input_build_job_mount_docker_socket"></a> [build\_job\_mount\_docker\_socket](#input\_build\_job\_mount\_docker\_socket) | Path on nodes for caching | `bool` | `false` | no |
+| <a name="input_build_job_mount_docker_socket"></a> [build\_job\_mount\_docker\_socket](#input\_build\_job\_mount\_docker\_socket) | Whether to hostmount the /var/run/docker.sock from host into the build container | `bool` | `false` | no |
 | <a name="input_build_job_node_selectors"></a> [build\_job\_node\_selectors](#input\_build\_job\_node\_selectors) | A map of node selectors to apply to the pods | `map(string)` | `{}` | no |
 | <a name="input_build_job_node_tolerations"></a> [build\_job\_node\_tolerations](#input\_build\_job\_node\_tolerations) | A map of node tolerations to apply to the pods as defined https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings | `map(string)` | `{}` | no |
 | <a name="input_build_job_pod_annotations"></a> [build\_job\_pod\_annotations](#input\_build\_job\_pod\_annotations) | A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. | `map(string)` | `{}` | no |
 | <a name="input_build_job_pod_labels"></a> [build\_job\_pod\_labels](#input\_build\_job\_pod\_labels) | A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. | `map(string)` | `{}` | no |
 | <a name="input_build_job_privileged"></a> [build\_job\_privileged](#input\_build\_job\_privileged) | Run all containers with the privileged flag enabled. This will allow the docker:dind image to run if you need to run Docker | `bool` | `false` | no |
+| <a name="input_build_job_pvcs"></a> [build\_job\_pvcs](#input\_build\_job\_pvcs) | A map of path:config for which each values' path is where the Persistent Volume so named should be mounted in the build container.  ie: build\_job\_pvcs = { '/root/caches/other-cache' = { name = 'vol-12345678' } } | `map(map(string))` | `{}` | no |
 | <a name="input_build_job_requests"></a> [build\_job\_requests](#input\_build\_job\_requests) | The CPU allocation given to and the requested for build containers | `map(any)` | <pre>{<br>  "cpu": "1",<br>  "memory": "512Mi"<br>}</pre> | no |
 | <a name="input_build_job_run_container_as_user"></a> [build\_job\_run\_container\_as\_user](#input\_build\_job\_run\_container\_as\_user) | SecurityContext: runAsUser for all running job pods | `string` | `null` | no |
 | <a name="input_build_job_secret_volumes"></a> [build\_job\_secret\_volumes](#input\_build\_job\_secret\_volumes) | Secret volume configuration instructs Kubernetes to use a secret that is defined in Kubernetes cluster and mount it inside of the containes as defined https://docs.gitlab.com/runner/executors/kubernetes.html#secret-volumes | <pre>object({<br>    name       = string<br>    mount_path = string<br>    read_only  = string<br>    items      = map(string)<br>  })</pre> | <pre>{<br>  "items": {},<br>  "mount_path": null,<br>  "name": null,<br>  "read_only": null<br>}</pre> | no |

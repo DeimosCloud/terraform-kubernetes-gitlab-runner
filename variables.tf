@@ -303,3 +303,15 @@ variable "build_job_requests" {
   }
 }
 
+variable "container_poll_interval" {
+  description = "How frequently, in seconds, the runner will poll the Kubernetes pod it has just created to check its status"
+  type = number
+  default = 3
+}
+
+variable "container_poll_timeout" {
+  description = "The amount of time in seconds attempting to connect to the created container"
+  type = number
+  default = 180
+}
+

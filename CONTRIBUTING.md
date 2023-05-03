@@ -26,13 +26,13 @@ $ git commit -m "<MESSAGE>" # calls pre-commit hooks before commiting changes
 
 ## Checklists for contributions
 
-- [ ] Add [sementics prefix](#semantic-pull-requests) to your PR or Commits (at leats one of your commit groups)
+- [ ] Add [semantics prefix](#semantic-pull-requests) to your PR or Commits (at least one of your commit groups)
 - [ ] CI tests are passing
 - [ ] README.md has been updated after any changes to variables and outputs. See [docs generation](README.md#doc-generation)
 
 ## Semantic Pull Requests
 
-To generate changelog, Pull Requests or Commits must have sementic and must follow conventional specs below:
+To generate changelog, Pull Requests or Commits must have semantic and must follow conventional specs below:
 
 - `feat:` for new features
 - `fix:` for bug fixes

@@ -286,7 +286,7 @@ variable "cache" {
 }
 
 variable "build_job_limits" {
-  description = "The CPU allocation given to and the requested for build containers"
+  description = "The CPU and memory limits for build containers"
   type        = map(any)
   default = {
     cpu    = "2"
@@ -295,11 +295,29 @@ variable "build_job_limits" {
 }
 
 variable "build_job_requests" {
-  description = "The CPU allocation given to and the requested for build containers"
+  description = "The CPU and memory requests for build containers"
   type        = map(any)
   default = {
     cpu    = "1"
     memory = "512Mi"
+  }
+}
+
+variable "overwrite_requests" {
+  description = "The CPU and memory request overwrites allowed for the build containers"
+  type        = map(any)
+  default = {
+    cpu    = null
+    memory = null
+  }
+}
+
+variable "overwrite_limits" {
+  description = "The CPU and memory limit overwrites allowed for the build containers"
+  type        = map(any)
+  default = {
+    cpu    = null
+    memory = null
   }
 }
 

@@ -24,8 +24,20 @@ locals {
   [runners.kubernetes]
     cpu_limit = "${var.build_job_limits.cpu}"
     cpu_request = "${var.build_job_requests.cpu}"
+  %{~if var.overwrite_requests.cpu != null~}
+    cpu_request_overwrite_max_allowed = "${var.overwrite_requests.cpu}"
+  %{~endif~}
+  %{~if var.overwrite_limits.cpu != null~}
+    cpu_limit_overwrite_max_allowed = "${var.overwrite_limits.cpu}"
+  %{~endif~}
     memory_limit = "${var.build_job_limits.memory}"
     memory_request = "${var.build_job_requests.memory}"
+  %{~if var.overwrite_requests.memory != null~}
+    cpu_request_overwrite_max_allowed = "${var.overwrite_requests.memory}"
+  %{~endif~}
+  %{~if var.overwrite_limits.memory != null~}
+    cpu_limit_overwrite_max_allowed = "${var.overwrite_limits.memory}"
+  %{~endif~}
   %{~if var.build_job_default_container_image != null~}
     image = "${var.build_job_default_container_image}"
   %{~endif~}

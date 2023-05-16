@@ -246,6 +246,8 @@ No modules.
 | <a name="input_manager_pod_annotations"></a> [manager\_pod\_annotations](#input\_manager\_pod\_annotations) | A map of annotations to be added to each build pod created by the Runner. The value of these can include environment variables for expansion. Pod annotations can be overwritten in each build. | `map(string)` | `{}` | no |
 | <a name="input_manager_pod_labels"></a> [manager\_pod\_labels](#input\_manager\_pod\_labels) | A map of labels to be added to each build pod created by the runner. The value of these can include environment variables for expansion. | `map(string)` | `{}` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | n/a | `string` | `"gitlab-runner"` | no |
+| <a name="poll_interval"></a> [poll\_interval](#poll\_interval) | How frequently, in seconds, the runner will poll the Kubernetes pod it has just created to check its status | `number` | `3` | no |
+| <a name="poll_timeout"></a> [poll\_timeout](#poll\_timeout) | The amount of time in seconds attempting to connect to the created container | `number` | `180` | no |
 | <a name="input_release_name"></a> [release\_name](#input\_release\_name) | The helm release name | `string` | `"gitlab-runner"` | no |
 | <a name="input_replicas"></a> [replicas](#input\_replicas) | the number of manager pods to create | `number` | `1` | no |
 | <a name="input_run_untagged_jobs"></a> [run\_untagged\_jobs](#input\_run\_untagged\_jobs) | Specify if jobs without tags should be run. https://docs.gitlab.com/ce/ci/runners/#runner-is-allowed-to-run-untagged-jobs | `bool` | `false` | no |

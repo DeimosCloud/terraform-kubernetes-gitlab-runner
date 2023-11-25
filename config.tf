@@ -58,7 +58,7 @@ locals {
       fs_group = ${var.docker_fs_group}
     %{~endif~}
     %{~if var.build_job_run_container_as_user != null~}
-      run_as_user: ${var.build_job_run_container_as_user}
+      run_as_user = ${var.build_job_run_container_as_user}
     %{~endif~}
     [runners.kubernetes.volumes]
     %{~if var.build_job_mount_docker_socket~}

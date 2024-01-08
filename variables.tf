@@ -88,7 +88,7 @@ variable "values_file" {
 variable "values" {
   description = "Additional values to be passed to the gitlab-runner helm chart"
   default     = {}
-  type        = map(any)
+  type        = any
 }
 
 variable "gitlab_url" {

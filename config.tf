@@ -22,10 +22,11 @@ locals {
     %{~endfor~}
 %{~endif}
   [runners.kubernetes]
-    cpu_limit = "${var.build_job_limits.cpu}"
-    cpu_request = "${var.build_job_requests.cpu}"
-    memory_limit = "${var.build_job_limits.memory}"
-    memory_request = "${var.build_job_requests.memory}"
+    %{~for key, value in var.job_resources~}
+    %{~if value != null~}
+    ${key} = "${value}"
+    %{~endif~}
+    %{~endfor~}
   %{~if var.build_job_default_container_image != null~}
     image = "${var.build_job_default_container_image}"
   %{~endif~}
@@ -35,7 +36,8 @@ locals {
     service_account = "${var.service_account}"
   %{~endif~}
     image_pull_secrets = ${jsonencode(var.image_pull_secrets)}
-    privileged      = ${var.build_job_privileged}
+    privileged = ${var.build_job_privileged}
+    pull_policy = ${jsonencode(var.pull_policy)}
     [runners.kubernetes.affinity]
     [runners.kubernetes.node_selector]
     %{~for key, value in var.build_job_node_selectors~}
@@ -58,7 +60,7 @@ locals {
       fs_group = ${var.docker_fs_group}
     %{~endif~}
     %{~if var.build_job_run_container_as_user != null~}
-      run_as_user: ${var.build_job_run_container_as_user}
+      run_as_user = ${var.build_job_run_container_as_user}
     %{~endif~}
     [runners.kubernetes.volumes]
     %{~if var.build_job_mount_docker_socket~}

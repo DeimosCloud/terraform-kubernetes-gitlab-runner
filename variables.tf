@@ -9,6 +9,16 @@ variable "runner_image" {
   type        = string
 }
 
+variable "pull_policy" {
+  description = "Specify the job images pull policy: never, if-not-present, always."
+  type        = set(string)
+  default     = ["if-not-present"]
+  validation {
+    condition     = length(setsubtract(var.pull_policy, ["never", "if-not-present", "always"])) == 0
+    error_message = "Must be of values: \"never\", \"if-not-present\", \"always\"."
+  }
+}
+
 variable "create_namespace" {
   type        = bool
   default     = true
@@ -285,21 +295,38 @@ variable "cache" {
   }
 }
 
-variable "build_job_limits" {
-  description = "The CPU allocation given to and the requested for build containers"
-  type        = map(any)
-  default = {
-    cpu    = "2"
-    memory = "1Gi"
-  }
-}
+variable "job_resources" {
+  description = "The CPU and memory resources given to service containers."
+  type = object({
+    // builder containers
+    cpu_limit : optional(string)
+    cpu_limit_overwrite_max_allowed : optional(string)
+    cpu_request : optional(string)
+    cpu_request_overwrite_max_allowed : optional(string)
+    memory_limit : optional(string)
+    memory_limit_overwrite_max_allowed : optional(string)
+    memory_request : optional(string)
+    memory_request_overwrite_max_allowed : optional(string)
 
-variable "build_job_requests" {
-  description = "The CPU allocation given to and the requested for build containers"
-  type        = map(any)
-  default = {
-    cpu    = "1"
-    memory = "512Mi"
-  }
-}
+    // helper containers
+    helper_cpu_limit : optional(string)
+    helper_cpu_limit_overwrite_max_allowed : optional(string)
+    helper_cpu_request : optional(string)
+    helper_cpu_request_overwrite_max_allowed : optional(string)
+    helper_memory_limit : optional(string)
+    helper_memory_limit_overwrite_max_allowed : optional(string)
+    helper_memory_request : optional(string)
+    helper_memory_request_overwrite_max_allowed : optional(string)
 
+    // service containers
+    service_cpu_limit : optional(string)
+    service_cpu_limit_overwrite_max_allowed : optional(string)
+    service_cpu_request : optional(string)
+    service_cpu_request_overwrite_max_allowed : optional(string)
+    service_memory_limit : optional(string)
+    service_memory_limit_overwrite_max_allowed : optional(string)
+    service_memory_request : optional(string)
+    service_memory_request_overwrite_max_allowed : optional(string)
+  })
+  default = {}
+}
